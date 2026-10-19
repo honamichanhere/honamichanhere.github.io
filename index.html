@@ -3,153 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Review Room</title>
-  <meta name="description" content="Tonton hasil edit, catat revisi tepat di timestamp-nya, dan approve — semua di satu tempat.">
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="theme-color" content="#0e0d0c">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e0d0c'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23ff4d2e'/%3E%3C/svg%3E">
+  <title>Portfolio — Video Editor</title>
+  <meta name="description" content="Portofolio video editor: Reels, wedding, company profile, YouTube. Lihat karya dan harga.">
+  <meta name="theme-color" content="#060607">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23060607'/%3E%3Cpath d='M9 9h14v14H9z' fill='none'/%3E%3Cpath d='M12 8l12 8-12 8z' fill='%23ffc72c'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Unbounded:wght@600;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <!-- ambience -->
+  <div class="bg" aria-hidden="true">
+    <i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i>
+    <div class="spot"></div>
+  </div>
   <div class="grain" aria-hidden="true"></div>
   <div class="progress" id="progress" aria-hidden="true"></div>
-  <div class="cursor" id="cursor" aria-hidden="true"><span>Play</span></div>
-  <div class="peek" id="peek" aria-hidden="true"><img alt=""></div>
+  <div class="cursor" id="cursor" aria-hidden="true"><span data-i18n="works.play">Putar</span></div>
 
+  <!-- header -->
   <header class="top" id="top">
-    <a class="brand" href="#/" aria-label="Beranda"><i class="rec"></i><span data-site="name"></span></a>
-    <nav>
-      <a href="#index">Index <sup id="nav-count"></sup></a>
-      <a href="#how">Cara kerja</a>
-      <a href="#contact" class="pill" data-magnetic>Kontak</a>
-    </nav>
+    <div class="top-in glass">
+      <a class="brand" href="#top" aria-label="Home" id="brand"></a>
+      <nav class="nav" id="nav">
+        <a href="#works" data-i18n="nav.works">Karya</a>
+        <a href="#pricing" data-i18n="nav.pricing">Harga</a>
+        <a href="#process" data-i18n="nav.process">Proses</a>
+        <a href="#contact" data-i18n="nav.contact">Hubungi</a>
+      </nav>
+      <div class="top-r">
+        <div class="lang" id="lang" role="group" aria-label="Language">
+          <i class="lang-pill"></i>
+          <button data-lang="id" class="is-on">ID</button>
+          <button data-lang="en">EN</button>
+        </div>
+        <a class="btn btn-sm" id="top-cta" href="#contact" data-magnetic><span data-i18n="nav.contact">Hubungi</span></a>
+      </div>
+    </div>
   </header>
 
   <main>
-    <!-- HERO -->
-    <section class="hero">
-      <p class="eyebrow mono"><i class="rec"></i> Review Room <span class="sep">/</span> <span id="tc">00:00:00:00</span></p>
-      <h1 class="display" aria-label="Tonton. Catat revisi. Approve.">
-        <span class="ln" style="--d:0"><span>Tonton.</span></span>
-        <span class="ln" style="--d:1"><span>Catat revisi.</span></span>
-        <span class="ln" style="--d:2"><span><em>Approve.</em></span></span>
-      </h1>
-
-      <div class="hero-foot">
-        <p class="lede">Semua hasil edit buat kamu ada di sini. Tonton, tulis catatan tepat di detik yang mau diubah, lalu kirim balik — tanpa bolak-balik chat panjang.</p>
-        <a class="btn" href="#index" data-magnetic>Lihat semua video <span aria-hidden="true">↓</span></a>
+    <!-- hero -->
+    <section class="hero" id="hero">
+      <div class="rays" aria-hidden="true"></div>
+      <div class="hero-in">
+        <p class="eyebrow"><i class="live"></i><span data-i18n="hero.eyebrow">Tersedia untuk proyek baru</span></p>
+        <h1 class="display" id="h1">
+          <span class="ln" style="--d:0"><span data-i18n="hero.l1"></span></span>
+          <span class="ln" style="--d:1"><span data-i18n="hero.l2"></span></span>
+          <span class="ln" style="--d:2"><span data-i18n="hero.l3"></span></span>
+        </h1>
+        <div class="hero-row">
+          <div class="hero-copy">
+            <p class="lede" data-i18n="hero.lede"></p>
+            <div class="ctas">
+              <a class="btn" href="#works" data-magnetic><span data-i18n="hero.cta1">Lihat karya</span><b aria-hidden="true">↓</b></a>
+              <a class="btn btn-ghost" id="hero-wa" href="#contact" target="_blank" rel="noopener" data-magnetic><span data-i18n="hero.cta2">WhatsApp</span></a>
+            </div>
+          </div>
+          <div class="reel glass" id="reel">
+            <div class="reel-frame" id="reel-frame"><img id="reel-img" alt=""></div>
+            <div class="reel-bar">
+              <span class="reel-tag"><i class="live"></i><span data-i18n="hero.live">Showreel</span></span>
+              <button class="reel-play" id="reel-play"><span data-i18n="hero.reel">Putar showreel</span><b aria-hidden="true">▶</b></button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <a class="featured" id="featured" href="#/" aria-label="Video unggulan">
-        <div class="featured-stack" id="featured-stack"></div>
-        <div class="featured-meta mono"><span id="featured-title"></span><span id="featured-count"></span></div>
-      </a>
+      <ul class="stats" id="stats"></ul>
     </section>
 
     <div class="marquee" aria-hidden="true"><div class="marquee-track" id="marquee"></div></div>
 
-    <!-- INDEX -->
-    <section class="index" id="index">
-      <div class="index-head" data-reveal>
-        <h2 class="h2">Index <sup id="index-count"></sup></h2>
-        <p class="muted">Klik video buat nonton. Catatan revisi tersimpan otomatis di browser kamu.</p>
-      </div>
-
-      <div class="toolbar" data-reveal>
-        <label class="search">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input id="q" type="search" placeholder="Cari judul, client…" autocomplete="off">
-        </label>
-        <div class="chips" id="chips-client" role="group" aria-label="Filter client"></div>
-        <div class="chips" id="chips-status" role="group" aria-label="Filter status"></div>
-        <div class="view" role="group" aria-label="Tampilan">
-          <button class="is-on" data-view="grid" aria-label="Grid"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></button>
-          <button data-view="list" aria-label="List"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg></button>
-        </div>
-      </div>
-
+    <!-- works -->
+    <section class="sec" id="works">
+      <header class="sec-head" data-reveal>
+        <h2 class="h2" data-i18n="works.title">Karya <em>pilihan</em></h2>
+        <p class="muted" data-i18n="works.sub"></p>
+      </header>
+      <div class="filters" id="filters" data-reveal role="group" aria-label="Filter"></div>
       <div class="grid" id="grid"></div>
-      <p class="empty" id="empty" hidden>Ga ada video yang cocok. Coba filter lain.</p>
+      <p class="empty" id="empty" hidden data-i18n="works.empty"></p>
     </section>
 
-    <!-- HOW -->
-    <section class="how" id="how">
-      <h2 class="h2" data-reveal>Cara kerja</h2>
+    <!-- pricing -->
+    <section class="sec" id="pricing">
+      <header class="sec-head" data-reveal>
+        <h2 class="h2" data-i18n="pricing.title">Harga <em>jelas</em></h2>
+        <p class="muted" data-i18n="pricing.sub"></p>
+      </header>
+      <div class="plans" id="plans"></div>
+      <p class="note muted" data-i18n="pricing.note" data-reveal></p>
+    </section>
+
+    <!-- process + about -->
+    <section class="sec" id="process">
+      <header class="sec-head" data-reveal>
+        <h2 class="h2" data-i18n="process.title">Cara <em>kerja</em></h2>
+      </header>
       <ol class="steps">
-        <li data-reveal style="--i:0"><span class="mono">01</span><h3>Tonton</h3><p>Buka video, nonton langsung di sini. Bisa lanjut ke video sebelumnya/berikutnya pakai tombol panah.</p></li>
-        <li data-reveal style="--i:1"><span class="mono">02</span><h3>Catat</h3><p>Klik kolom catatan, video otomatis pause dan timestamp terkunci. Tulis apa yang mau diubah.</p></li>
-        <li data-reveal style="--i:2"><span class="mono">03</span><h3>Kirim</h3><p>Satu klik kirim semua catatan lewat WhatsApp, atau langsung Approve kalau udah oke.</p></li>
+        <li class="glass" data-reveal style="--i:0"><b>01</b><h3 data-i18n="process.1t"></h3><p data-i18n="process.1d"></p></li>
+        <li class="glass" data-reveal style="--i:1"><b>02</b><h3 data-i18n="process.2t"></h3><p data-i18n="process.2d"></p></li>
+        <li class="glass" data-reveal style="--i:2"><b>03</b><h3 data-i18n="process.3t"></h3><p data-i18n="process.3d"></p></li>
+        <li class="glass" data-reveal style="--i:3"><b>04</b><h3 data-i18n="process.4t"></h3><p data-i18n="process.4d"></p></li>
       </ol>
+    </section>
+
+    <section class="sec about-faq">
+      <div class="about glass" data-reveal>
+        <h2 class="h3" data-i18n="about.title">Tentang <em>gua</em></h2>
+        <p id="about-text"></p>
+        <p class="tools-label muted" data-i18n="about.tools">Tools</p>
+        <div class="tags" id="tools"></div>
+      </div>
+      <div class="faq" data-reveal>
+        <h2 class="h3" data-i18n="faq.title">Sering <em>ditanya</em></h2>
+        <div id="faq"></div>
+      </div>
     </section>
   </main>
 
+  <!-- contact / footer -->
   <footer class="foot" id="contact">
-    <p class="mono muted" data-reveal>Ada yang mau didiskusikan?</p>
-    <a class="mega" id="mega" href="#contact" data-reveal data-magnetic>Ngobrol <em>yuk</em> →</a>
-    <div class="foot-row mono muted">
-      <span>© <span data-site="year"></span> <span data-site="name"></span></span>
-      <span id="foot-links"></span>
-      <a href="#top">Ke atas ↑</a>
+    <p class="eyebrow center" data-reveal><i class="live"></i><span data-i18n="contact.eyebrow"></span></p>
+    <a class="mega" id="mega" href="#contact" data-reveal data-magnetic data-i18n="contact.big"></a>
+    <p class="muted center" data-reveal data-i18n="contact.sub"></p>
+    <div class="ctas center" data-reveal>
+      <a class="btn" id="foot-wa" href="#contact" target="_blank" rel="noopener" data-magnetic data-i18n="contact.wa">WhatsApp</a>
+      <a class="btn btn-ghost" id="foot-mail" href="#contact" data-magnetic data-i18n="contact.mail">Email</a>
+    </div>
+    <div class="socials" id="socials"></div>
+    <div class="foot-row muted">
+      <span>© <span id="year"></span> <span data-site="name"></span></span>
+      <a href="#top" data-i18n="foot.top">Ke atas</a>
     </div>
   </footer>
 
-  <!-- VIEWER -->
+  <!-- viewer -->
   <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="m-title">
     <div class="modal-bg" data-close></div>
-    <div class="sheet">
+    <div class="sheet glass">
       <div class="sheet-top">
-        <div class="mono crumb"><span id="m-no"></span><span class="muted"> / </span><span id="m-total" class="muted"></span></div>
+        <span class="muted"><span id="m-no"></span> / <span id="m-total"></span></span>
         <div class="sheet-nav">
-          <button id="prev" aria-label="Video sebelumnya">←</button>
-          <button id="next" aria-label="Video berikutnya">→</button>
-          <button data-close class="close">Tutup <kbd>Esc</kbd></button>
+          <button id="prev" aria-label="Prev">←</button>
+          <button id="next" aria-label="Next">→</button>
+          <button class="close" data-close><span data-i18n="modal.close">Tutup</span> <kbd>Esc</kbd></button>
         </div>
       </div>
       <div class="sheet-body">
         <div class="stage">
           <div class="frame"><div id="yt"></div></div>
-          <div class="info">
-            <div>
-              <h2 id="m-title"></h2>
-              <p class="mono muted" id="m-sub"></p>
-            </div>
-            <div class="info-actions">
-              <span class="status" id="m-status"></span>
-              <button class="ghost" id="copylink">Copy link</button>
-            </div>
-          </div>
         </div>
-
-        <aside class="notes">
-          <div class="notes-head">
-            <h3>Catatan revisi</h3>
-            <span class="mono muted" id="notes-count"></span>
-          </div>
-          <form id="note-form" autocomplete="off">
-            <div class="stamp">
-              <span class="mono" id="stamp-time">00:00</span>
-              <button type="button" class="link" id="stamp-follow" hidden>ikuti video lagi</button>
-            </div>
-            <textarea id="note-text" rows="3" placeholder="Klik di sini, video otomatis pause. Tulis catatannya…" required></textarea>
-            <button type="submit" class="btn small">Tambah catatan</button>
-          </form>
-          <ul class="note-list" id="note-list"></ul>
-          <div class="send">
-            <button class="btn" id="send-wa">Kirim revisi</button>
-            <button class="ghost" id="copy-notes">Copy</button>
-            <button class="ok" id="approve">Approve ✓</button>
+        <aside class="detail">
+          <span class="tag" id="m-cat"></span>
+          <h2 id="m-title"></h2>
+          <p id="m-desc" class="muted"></p>
+          <dl id="m-meta"></dl>
+          <div class="tags" id="m-tools"></div>
+          <div class="detail-cta">
+            <a class="btn" id="m-order" href="#contact" target="_blank" rel="noopener"><span data-i18n="modal.order"></span></a>
+            <button class="btn btn-ghost" id="m-copy" data-i18n="modal.copy"></button>
           </div>
         </aside>
       </div>
     </div>
   </div>
-
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

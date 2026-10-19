@@ -1,28 +1,17 @@
-# Review Room
+# Portfolio — Video Editor
 
-Website review hasil edit untuk client. Video di-host di YouTube (Unlisted), situs di GitHub Pages. Tanpa build step, tanpa dependency.
+Website portofolio publik dengan tema kaca neon (hitam + kuning/orange/merah), dua bahasa (ID/EN), daftar karya, harga, proses, FAQ dan kontak. Video di-host di YouTube, situs di GitHub Pages. Tanpa build step.
 
-## Tambah / ubah video
-Buka `js/data.js`, tambah satu objek ke `VIDEOS`:
+## Edit isi
+Semua konten ada di `js/data.js`:
+- `SITE` — nama, logo, WhatsApp, email, sosmed, showreel, statistik, tentang, tools
+- `VIDEOS` — daftar karya (ID YouTube, client, kategori, tahun, tools, deskripsi). Kategori jadi filter otomatis
+- `PRICING` — paket harga
+- `FAQ` — pertanyaan umum
 
-```js
-{ id: "slug-unik", yt: "ID_YOUTUBE", title: "Judul", client: "Nama Client",
-  category: "Reels", status: "review", date: "2026-10-19", duration: "01:30" }
-```
+Teks UI (judul, tombol) ada di `js/i18n.js`. Teks dua bahasa ditulis `{ id: "...", en: "..." }`.
 
-- `yt` = bagian setelah `v=` di link YouTube (upload sebagai **Unlisted**).
-- `status` = `approved` | `review` | `revisi`
-- `featured: true` untuk tampil di hero.
-- Filter client, urutan, dan penomoran otomatis.
-
-Ganti juga `SITE` di file yang sama (nama, nomor WhatsApp, email). Tombol "Kirim revisi" & "Approve" membuka WhatsApp ke nomor itu.
-
-## Catatan revisi
-Disimpan di browser client (localStorage), dikirim lewat WhatsApp. Tidak ada server/database.
+Tombol "Pesan edit kayak gini" dan "Pilih paket" membuka WhatsApp dengan pesan otomatis (atau email kalau nomor WhatsApp kosong).
 
 ## Deploy
 GitHub Pages: Settings → Pages → Deploy from branch → `main` / root.
-
-## Catatan
-- Halaman diberi `noindex`, tapi repo harus **public** agar Pages gratis jalan. Jangan taruh info rahasia di repo.
-- Unlisted = siapa pun yang punya link bisa nonton.
