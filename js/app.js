@@ -1,7 +1,13 @@
 (() => {
   const S = window.SITE, D = window.I18N;
-  const ALL = [...window.VIDEOS].sort((a, b) => (b.year || 0) - (a.year || 0));
-  const REEL = { id: "reel", yt: S.showreel, title: "Showreel", client: S.name, category: "Showreel", year: new Date().getFullYear(), tools: S.tools };
+  /* yt boleh ID atau link penuh (watch?v=, youtu.be/, shorts/, embed/) */
+  const ytId = s => { s = String(s || "").trim(); const m = s.match(/(?:v=|youtu\.be\/|shorts\/|embed\/|live\/)([\w-]{11})/); return m ? m[1] : s.slice(0, 11); };
+  const seen = {};
+  const ALL = window.VIDEOS.map(v => {
+    const yt = ytId(v.yt); let id = v.id || yt; if (seen[id]) id += "-" + (++seen[id]); else seen[id] = 1;
+    return { ...v, yt, id, category: v.category || "Video", client: v.client || "", views: v.views ?? null, year: v.uploaded ? +v.uploaded.slice(0, 4) : v.year };
+  }).sort((a, b) => (b.uploaded || "").localeCompare(a.uploaded || ""));
+  const REEL = { id: "reel", yt: ytId(S.showreel), title: "Showreel", client: S.name, category: "Showreel", tools: S.tools };
   const byId = Object.fromEntries([...ALL, REEL].map(v => [v.id, v]));
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -30,6 +36,18 @@
     i.addEventListener("load", () => { if (i.naturalWidth <= 120) fb(); });
     return i;
   };
+  const loc = () => (lang === "id" ? "id-ID" : "en-US");
+  const compact = n => new Intl.NumberFormat(loc(), { notation: "compact", maximumFractionDigits: 1 }).format(n);
+  const ago = d => {
+    if (!d) return "";
+    const days = Math.round((new Date(d) - Date.now()) / 864e5), rtf = new Intl.RelativeTimeFormat(loc(), { numeric: "auto" });
+    const a = Math.abs(days);
+    if (a < 7) return rtf.format(days, "day");
+    if (a < 30) return rtf.format(Math.round(days / 7), "week");
+    if (a < 365) return rtf.format(Math.round(days / 30), "month");
+    return rtf.format(Math.round(days / 365), "year");
+  };
+  const longDate = d => d ? new Date(d).toLocaleDateString(loc(), { day: "numeric", month: "long", year: "numeric" }) : "";
   const contactUrl = text => S.whatsapp
     ? `https://wa.me/${S.whatsapp}?text=${encodeURIComponent(text)}`
     : `mailto:${S.email}?subject=${encodeURIComponent("Video project")}&body=${encodeURIComponent(text)}`;
@@ -43,12 +61,12 @@
   $("#tools").innerHTML = (S.tools || []).map(x => `<span class="tag">${esc(x)}</span>`).join("");
   $("#socials").innerHTML = [["instagram", "Instagram"], ["tiktok", "TikTok"], ["youtube", "YouTube"]]
     .filter(([k]) => S[k]).map(([k, n]) => `<a href="${esc(S[k])}" target="_blank" rel="noopener">${n}</a>`).join("");
-  $("#reel-img").src = thumb(S.showreel); $("#reel-img").addEventListener("error", e => e.target.src = thumbLo(S.showreel));
+  $("#reel-img").src = thumb(REEL.yt); $("#reel-img").addEventListener("error", e => e.target.src = thumbLo(REEL.yt));
 
   /* hero reel: muted looping background (lazy, after load) */
-  if (!calm && S.showreel) addEventListener("load", () => setTimeout(() => {
+  if (!calm && REEL.yt) addEventListener("load", () => setTimeout(() => {
     const f = document.createElement("iframe");
-    f.src = `https://www.youtube-nocookie.com/embed/${S.showreel}?autoplay=1&mute=1&loop=1&playlist=${S.showreel}&controls=0&modestbranding=1&playsinline=1&rel=0&disablekb=1&iv_load_policy=3`;
+    f.src = `https://www.youtube-nocookie.com/embed/${REEL.yt}?autoplay=1&mute=1&loop=1&playlist=${REEL.yt}&controls=0&modestbranding=1&playsinline=1&rel=0&disablekb=1&iv_load_policy=3`;
     f.allow = "autoplay; encrypted-media"; f.title = "Showreel"; f.tabIndex = -1; f.setAttribute("aria-hidden", "true");
     f.addEventListener("load", () => setTimeout(() => f.classList.add("on"), 1200));
     $("#reel-frame").append(f);
@@ -61,17 +79,25 @@
   $("#marquee").innerHTML = reps + reps;
 
   /* ---------- render: language dependent ---------- */
+  const autoStat = {
+    videos: () => ({ n: ALL.length, suffix: "", label: t("stat.videos") }),
+    clients: () => ({ n: new Set(ALL.map(v => v.client).filter(Boolean)).size, suffix: "", label: t("stat.clients") }),
+    views: () => ({ n: ALL.reduce((a, v) => a + (v.views || 0), 0), suffix: "", compact: true, label: t("stat.views") }),
+  };
+  const statVal = (n, sfx, c) => (c ? compact(n) : n + sfx);
   function renderStats() {
-    $("#stats").innerHTML = S.stats.map(s => `<li><strong data-n="${s.n}" data-s="${esc(s.suffix)}">${s.n}${esc(s.suffix)}</strong><span>${esc(L(s.label))}</span></li>`).join("");
-    if (statsDone) return;
+    $("#stats").innerHTML = S.stats.map(s => {
+      const r = s.auto && autoStat[s.auto] ? autoStat[s.auto]() : { n: s.n, suffix: s.suffix || "", compact: false, label: L(s.label) };
+      return `<li><strong data-n="${r.n}" data-s="${esc(r.suffix)}" data-c="${r.compact ? 1 : 0}">${statVal(r.n, r.suffix, r.compact)}</strong><span>${esc(r.label)}</span></li>`;
+    }).join("");
   }
   let statsDone = false;
   function countUp() {
     if (statsDone) return; statsDone = true;
-    $$("#stats strong").forEach(el => {
-      const n = +el.dataset.n, sfx = el.dataset.s, t0 = performance.now(), dur = 1700;
-      const step = now => { const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 4); el.textContent = Math.round(n * e) + sfx; if (p < 1) requestAnimationFrame(step); };
-      if (calm) el.textContent = n + sfx; else requestAnimationFrame(step);
+    $("#stats strong").forEach(el => {
+      const n = +el.dataset.n, sfx = el.dataset.s, c = el.dataset.c === "1", t0 = performance.now(), dur = 1700;
+      const step = now => { const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 4); el.textContent = statVal(Math.round(n * e), sfx, c); if (p < 1) requestAnimationFrame(step); };
+      if (calm) el.textContent = statVal(n, sfx, c); else requestAnimationFrame(step);
     });
   }
 
@@ -92,7 +118,7 @@
       const a = document.createElement("a");
       a.className = "card glass" + (v.id === wideId ? " wide" : ""); a.href = `#/v/${v.id}`; a.dataset.id = v.id;
       a.innerHTML = `<div class="thumb"><span class="badge">${esc(v.category)}</span>${v.duration ? `<span class="dur">${esc(v.duration)}</span>` : ""}</div>
-        <div class="card-body"><h3>${esc(L(v.title))}</h3><div class="card-meta"><span>${esc(v.client)}</span><span>${esc(v.year)}</span></div></div>`;
+        <div class="card-body"><h3>${esc(L(v.title) || "…")}</h3><div class="card-meta">${[v.client, v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")}</div></div>`;
       $(".thumb", a).prepend(img(v.yt, L(v.title)));
       grid.append(a); return a;
     });
@@ -222,7 +248,7 @@
     $("#m-no").textContent = isReel ? "★" : pad(ALL.indexOf(v) + 1); $("#m-total").textContent = pad(ALL.length);
     $("#m-cat").textContent = v.category; $("#m-title").textContent = L(v.title);
     $("#m-desc").textContent = L(v.desc) || ""; $("#m-desc").hidden = !v.desc;
-    $("#m-meta").innerHTML = isReel ? "" : [[t("modal.client"), v.client], [t("modal.cat"), v.category], [t("modal.year"), v.year], [t("modal.dur"), v.duration]]
+    $("#m-meta").innerHTML = isReel ? "" : [[t("modal.client"), v.client], [t("modal.cat"), v.category], [t("modal.uploaded"), longDate(v.uploaded)], [t("modal.views"), v.views != null ? new Intl.NumberFormat(loc()).format(v.views) : ""], [t("modal.dur"), v.duration]]
       .filter(r => r[1]).map(([k, val]) => `<dt>${esc(k)}</dt><dd>${esc(val)}</dd>`).join("");
     $("#m-meta").hidden = isReel;
     $("#m-tools").innerHTML = (v.tools || []).map(x => `<span class="tag">${esc(x)}</span>`).join("");
@@ -254,6 +280,16 @@
     if (e.key === "ArrowLeft") step(-1);
     if (e.key === "ArrowRight") step(1);
   });
+
+  /* ---------- judul otomatis dari YouTube kalau title dikosongkan di data.js ---------- */
+  const setTitle = (v, title) => {
+    v.title = title; const c = cards.find(c => c.dataset.id === v.id);
+    if (c) { $("h3", c).textContent = title; $("img", c).alt = title; }
+    if (cur && cur.id === v.id) fillModal();
+  };
+  ALL.filter(v => !v.title).forEach(v =>
+    fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + v.yt)}&format=json`)
+      .then(r => r.ok ? r.json() : Promise.reject()).then(j => setTitle(v, j.title)).catch(() => setTitle(v, "Video")));
 
   /* ---------- boot ---------- */
   applyI18n(false); renderCards(); onScroll(); route();
