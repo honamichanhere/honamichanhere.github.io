@@ -6,7 +6,7 @@
 
 window.SITE = {
   name: "Honami",
-  logo: "",                      // path logo, mis. "assets/logo.png" (kosong = pakai teks nama)
+  logo: "assets/logo.png",       // path logo/foto profil (ganti file assets/logo.png, atau kosongkan = pakai teks nama)
   role: { id: "Video Editor", en: "Video Editor" },
   whatsapp: "6288986045729",     // format internasional tanpa + dan spasi
   email: "ichinosehonamisan16@gmail.com",

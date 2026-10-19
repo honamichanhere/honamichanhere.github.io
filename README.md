@@ -27,7 +27,7 @@ Website portofolio video editor: tema kaca hitam dengan aksen neon kuning/orange
 | `desc` | Deskripsi dua bahasa `{ id: "...", en: "..." }` (opsional) |
 | `featured` | `true` = jadi kartu besar (cukup satu video) |
 
-Urutan video otomatis dari yang terbaru. Statistik di hero (jumlah video, total tayang, jumlah client) **dihitung otomatis** dari daftar ini. Jumlah tayang di YouTube berubah terus, jadi angka `views` perlu kamu update manual sesekali.
+Urutan video otomatis dari yang terbaru. Statistik di hero (jumlah video, total tayang, jumlah client) **dihitung otomatis** dari daftar ini. Kalau auto-update dinyalakan (lihat bawah), `views` dan data lain diisi otomatis dari YouTube dan menimpa angka manual.
 
 ## Bagian lain di `js/data.js`
 - `SITE` — nama, logo, WhatsApp, email, sosmed, showreel, tools, teks "Tentang"
@@ -38,3 +38,16 @@ Semua yang bertanda `[CONTOH]` masih template, ganti kalau sudah siap. Teks UI (
 
 ## Deploy
 GitHub Pages: Settings → Pages → Deploy from branch → `main` / root.
+
+## Update otomatis dari YouTube (tayang, judul, tanggal, durasi)
+
+GitHub Action `.github/workflows/update-stats.yml` jalan tiap 6 jam, mengambil data semua video di `js/data.js` dari YouTube Data API, lalu menyimpannya ke `js/stats.json`. Website membaca file itu otomatis.
+
+**Setup sekali saja:**
+1. Buka https://console.cloud.google.com → buat project baru.
+2. APIs & Services → Library → aktifkan **YouTube Data API v3**.
+3. APIs & Services → Credentials → Create credentials → **API key**. (Disarankan: batasi key ke YouTube Data API v3.)
+4. Di repo GitHub: Settings → Secrets and variables → Actions → New repository secret. Name: `YT_API_KEY`, isi: key tadi.
+5. Tab Actions → "Update video stats" → Run workflow (buat tes pertama).
+
+Key disimpan sebagai secret, tidak pernah muncul di website. Tanpa key, website tetap jalan memakai angka manual.

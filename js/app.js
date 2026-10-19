@@ -54,7 +54,8 @@
   let tt; const toast = msg => { const el = $("#toast"); el.textContent = msg; el.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => el.classList.remove("on"), 2200); };
 
   /* ---------- static bits (not language dependent) ---------- */
-  $("#brand").innerHTML = S.logo ? `<img src="${esc(S.logo)}" alt="${esc(S.name)}">` : `<i class="mark"></i><span>${esc(S.name)}</span>`;
+  $("#brand").innerHTML = S.logo ? `<img class="logo" src="${esc(S.logo)}" alt=""><span>${esc(S.name)}</span>` : `<i class="mark"></i><span>${esc(S.name)}</span>`;
+  if (S.logo) { $("#avatar").src = S.logo; $("#avatar").hidden = false; $$("link[rel=icon]").forEach(l => { l.href = S.logo; l.type = "image/png"; }); }
   $$("[data-site]").forEach(el => el.textContent = S[el.dataset.site] ?? "");
   $("#year").textContent = new Date().getFullYear();
   $("#foot-mail").href = `mailto:${S.email}`;
@@ -94,7 +95,7 @@
   let statsDone = false;
   function countUp() {
     if (statsDone) return; statsDone = true;
-    $("#stats strong").forEach(el => {
+    $$("#stats strong").forEach(el => {
       const n = +el.dataset.n, sfx = el.dataset.s, c = el.dataset.c === "1", t0 = performance.now(), dur = 1700;
       const step = now => { const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 4); el.textContent = statVal(Math.round(n * e), sfx, c); if (p < 1) requestAnimationFrame(step); };
       if (calm) el.textContent = statVal(n, sfx, c); else requestAnimationFrame(step);
@@ -290,6 +291,23 @@
   ALL.filter(v => !v.title).forEach(v =>
     fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + v.yt)}&format=json`)
       .then(r => r.ok ? r.json() : Promise.reject()).then(j => setTitle(v, j.title)).catch(() => setTitle(v, "Video")));
+
+  /* ---------- stats otomatis dari YouTube (js/stats.json, diisi GitHub Action) ---------- */
+  fetch("js/stats.json?" + Date.now()).then(r => r.ok ? r.json() : {}).then(st => {
+    let changed = false;
+    [...ALL, REEL].forEach(v => {
+      const x = st[v.yt]; if (!x) return;
+      if (x.views != null) v.views = x.views;
+      if (!v.uploaded && x.uploaded) v.uploaded = x.uploaded;
+      if (!v.duration && x.duration) v.duration = x.duration;
+      if (!v.title && x.title) v.title = x.title;
+      changed = true;
+    });
+    if (!changed) return;
+    ALL.sort((a, b) => (b.uploaded || "").localeCompare(a.uploaded || ""));
+    renderStats(); if (statsDone) { statsDone = false; countUp(); }
+    renderCards(); if (cur) fillModal();
+  }).catch(() => {});
 
   /* ---------- boot ---------- */
   applyI18n(false); renderCards(); onScroll(); route();
