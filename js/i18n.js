@@ -1,6 +1,12 @@
 /* Teks UI dua bahasa. Kunci dipakai lewat atribut data-i18n="kunci" di index.html. */
 window.I18N = {
   id: {
+    "dock.discover": "Discover", "discover.title": "<em>Discover</em>", "discover.sub": "Sorotan pilihan: yang terbaru dan paling layak dicoba.",
+    "spot.label": "Sorotan", "spot.open": "Buka", "kind.script": "Script", "kind.video": "Video", "kind.product": "Produk", "kind.game": "Game",
+    "other.scripts": "Script & Tools", "other.videos": "Tutorial & Video",
+    "script.open": "Lihat detail", "script.loader": "Loader Script", "script.hint": "Ketuk kotak sekali untuk memilih semua, lalu salin.",
+    "script.copy": "Salin script", "script.copied": "Script tersalin", "script.games": "Game yang Didukung", "script.features": "Fitur",
+    "script.guide": "Panduan", "script.steps": "Cara pakai", "script.github": "Lihat di GitHub",
     "dock.bio": "Biodata", "dock.edit": "Edit", "dock.store": "Store", "dock.other": "Other",
     "bio.hello": "Halo, gua", "bio.links": "Link",
     "bio.reel": "Putar showreel", "bio.live": "Showreel", "bio.tools": "Tools",
@@ -31,6 +37,12 @@ window.I18N = {
     "msg.video": "Halo, aku suka video \"{n}\" di portofolio kamu. Bisa bikin yang mirip buat aku?",
   },
   en: {
+    "dock.discover": "Discover", "discover.title": "<em>Discover</em>", "discover.sub": "Hand-picked highlights: the newest and most worth trying.",
+    "spot.label": "Spotlight", "spot.open": "Open", "kind.script": "Script", "kind.video": "Video", "kind.product": "Product", "kind.game": "Game",
+    "other.scripts": "Scripts & Tools", "other.videos": "Tutorials & Videos",
+    "script.open": "View details", "script.loader": "Loader Script", "script.hint": "Tap the box once to select all, then copy.",
+    "script.copy": "Copy script", "script.copied": "Script copied", "script.games": "Supported Games", "script.features": "Features",
+    "script.guide": "Guide", "script.steps": "How to use", "script.github": "View on GitHub",
     "dock.bio": "Bio", "dock.edit": "Edit", "dock.store": "Store", "dock.other": "Other",
     "bio.hello": "Hi, I'm", "bio.links": "Links",
     "bio.reel": "Play showreel", "bio.live": "Showreel", "bio.tools": "Tools",

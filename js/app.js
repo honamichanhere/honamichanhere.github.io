@@ -8,7 +8,7 @@
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
   /* hanya izinkan skema aman untuk link yang berasal dari data (blokir javascript: dll) */
   const safeUrl = u => { u = String(u || "").trim(); return /^(https?:\/\/|mailto:|tel:|#|assets\/|\.\/)/i.test(u) ? u : ""; };
-  [window.LINKS, window.OTHER_LINKS, window.GAMES, window.PRODUCTS].forEach(arr => (arr || []).forEach(o => { if ("url" in o) o.url = safeUrl(o.url); }));
+  [window.LINKS, window.OTHER_LINKS, window.GAMES, window.PRODUCTS, window.SCRIPTS].forEach(arr => (arr || []).forEach(o => { if ("url" in o) o.url = safeUrl(o.url); }));
   window.SITE.whatsapp = String(window.SITE.whatsapp || "").replace(/\D/g, "");
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
@@ -25,18 +25,22 @@
   const L = x => (x && typeof x === "object" ? (x[lang] ?? x.id ?? "") : x ?? "");
   const ico = n => `<svg class="ico" aria-hidden="true"><use href="#i-${n}"/></svg>`;
 
-  /* ---------- video data ---------- */
+  /* ---------- data ---------- */
   const ytId = s => { s = String(s || "").trim(); const m = s.match(/(?:v=|youtu\.be\/|shorts\/|embed\/|live\/)([\w-]{11})/); return m ? m[1] : s.slice(0, 11); };
   const seen = {};
   const ALL = window.VIDEOS.map(v => {
     const yt = ytId(v.yt); let id = v.id || yt; if (seen[id]) id += "-" + (++seen[id]); else seen[id] = 1;
-    return { ...v, yt, id, type: v.type === "own" ? "own" : "client", category: v.category || "Video", client: v.client || "", views: v.views ?? null };
+    return { ...v, yt, id, type: v.type === "own" ? "own" : v.type === "other" ? "other" : "client", category: v.category || "Video", client: v.client || "", views: v.views ?? null };
   });
   const sortAll = () => ALL.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (b.uploaded || "").localeCompare(a.uploaded || ""));
   sortAll();
+  const EDIT = () => ALL.filter(v => v.type !== "other"), OTV = () => ALL.filter(v => v.type === "other");
   const byId = Object.fromEntries(ALL.map(v => [v.id, v]));
-  const PR = window.PRODUCTS.map((p, i) => ({ ...p, id: p.id || "p" + (i + 1), images: p.images || [] }));
-  const byP = Object.fromEntries(PR.map(p => [p.id, p]));
+  const PR = window.PRODUCTS.map((p, i) => ({ ...p, kind: "product", id: p.id || "p" + (i + 1), images: p.images || [] }));
+  const SC = (window.SCRIPTS || []).map((s, i) => ({ ...s, kind: "script", id: s.id || "s" + (i + 1), images: s.images || [] }));
+  const byItem = Object.fromEntries([...PR, ...SC].map(p => [p.kind[0] + "/" + p.id, p]));
+  const itemHash = p => `#/${p.kind[0]}/${p.id}`;
+  const listOfItem = p => (p.kind === "script" ? SC : PR);
 
   /* ---------- helpers ---------- */
   const thumb = id => `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
@@ -99,9 +103,9 @@
     e.preventDefault(); if (await copyText(a.dataset.copy)) toast(t("toast.copied"));
   });
   const autoStat = {
-    videos: () => ({ n: ALL.length, suffix: "", label: t("stat.videos") }),
-    clients: () => ({ n: new Set(ALL.map(v => v.client).filter(Boolean)).size, suffix: "", label: t("stat.clients") }),
-    views: () => ({ n: ALL.reduce((a, v) => a + (v.views || 0), 0), suffix: "", compact: true, label: t("stat.views") }),
+    videos: () => ({ n: EDIT().length, suffix: "", label: t("stat.videos") }),
+    clients: () => ({ n: new Set(EDIT().map(v => v.client).filter(Boolean)).size, suffix: "", label: t("stat.clients") }),
+    views: () => ({ n: EDIT().reduce((a, v) => a + (v.views || 0), 0), suffix: "", compact: true, label: t("stat.views") }),
   };
   const statVal = (n, sfx, c) => (c ? compact(n) : n + sfx);
   function renderBio() {
@@ -124,6 +128,35 @@
     });
   }
   new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { countUp(); o.disconnect(); } }, { threshold: .3 }).observe($("#stats"));
+
+  /* ---------- DISCOVER (sorotan; muncul hanya kalau ada item) ---------- */
+  const rank = x => (x.discover === true ? 99 : +x.discover || 99);
+  function discoverItems() {
+    const out = [];
+    SC.filter(s => s.discover).forEach(s => out.push({ kind: "script", r: rank(s), title: L(s.name), sub: L(s.header), href: itemHash(s), image: s.images[0], icon: "code", cta: t("spot.open") }));
+    ALL.filter(v => v.discover).forEach(v => out.push({ kind: "video", r: rank(v), title: L(v.title) || "…", sub: [v.category, v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).join(" • "), href: `#/v/${v.id}`, yt: v.yt, cta: t("spot.open") }));
+    PR.filter(p => p.discover).forEach(p => out.push({ kind: "product", r: rank(p), title: L(p.name), sub: L(p.header), href: itemHash(p), image: p.images[0], icon: "store", price: p.price, cta: t("store.see") }));
+    window.GAMES.filter(g => g.discover && g.url).forEach(g => { const r = (g.placeId && ext.roblox[g.placeId]) || {}; out.push({ kind: "game", r: rank(g), title: L(g.name) || r.name || "Game", sub: L(g.desc), href: g.url, external: true, image: g.image || r.image, icon: "roblox", cta: t("game.play") }); });
+    return out.sort((a, b) => a.r - b.r);
+  }
+  function renderDiscover() {
+    const items = discoverItems(), sec = $("#discover"), spot = $("#spot");
+    sec.hidden = !items.length; $("#nav-discover").hidden = !items.length;
+    spot.classList.toggle("hero", items.length >= 3);
+    spot.innerHTML = "";
+    items.forEach(it => {
+      const a = document.createElement("a");
+      a.className = "spot-card"; a.href = it.href; if (it.external) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+      a.innerHTML = `<span class="spot-ribbon">${ico("star")}${esc(t("spot.label"))}</span>
+        <div class="spot-img"><span class="badge">${esc(t("kind." + it.kind))}</span>${it.kind === "video" ? `<span class="spot-play">${ico("play")}</span>` : ""}${it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy"${it.external ? ' referrerpolicy="no-referrer"' : ""}>` : it.yt ? "" : ico(it.icon || "star")}</div>
+        <div class="spot-body"><h3>${esc(it.title)}</h3><p>${esc(it.sub)}</p>
+          <div class="spot-foot"><span class="btn btn-sm">${esc(it.cta)}${ico("arrow")}</span>${it.price ? `<small>${esc(it.price)}</small>` : ""}</div></div>`;
+      if (it.yt) $(".spot-img", a).prepend(img(it.yt, it.title));
+      spot.append(a);
+    });
+    observeReveal($$(".spot-card"), 6);
+    requestAnimationFrame(() => { placeDock(); onScroll(); });
+  }
 
   /* ---------- EDIT ---------- */
   const grid = $("#grid"), gridMore = $("#grid-more"); let cards = [];
@@ -179,16 +212,17 @@
     if (state.cat !== "all" && !cats.includes(state.cat)) state.cat = "all";
     $("#filters").innerHTML = cats.length > 1 ? [["all", t("edit.all")], ...cats.map(c => [c, c])].map(([v, l]) => `<button class="chip${state.cat === v ? " is-on" : ""}" data-v="${esc(v)}">${esc(l)}</button>`).join("") : "";
   }
+  function makeCard(v) {
+    const a = document.createElement("a");
+    a.className = "card glass"; a.href = `#/v/${v.id}`; a.dataset.id = v.id;
+    a.innerHTML = `<div class="thumb"><span class="badge">${esc(v.category)}</span>${v.duration ? `<span class="dur">${esc(v.duration)}</span>` : ""}</div>
+      <div class="card-body"><h3>${esc(L(v.title) || "…")}</h3><div class="card-meta">${[v.type === "client" ? v.client : "", v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")}</div></div>`;
+    $(".thumb", a).prepend(img(v.yt, L(v.title)));
+    return a;
+  }
   function renderCards() {
     stopPreview(); grid.innerHTML = ""; gridMore.innerHTML = "";
-    cards = ALL.map(v => {
-      const a = document.createElement("a");
-      a.className = "card glass"; a.href = `#/v/${v.id}`; a.dataset.id = v.id;
-      a.innerHTML = `<div class="thumb"><span class="badge">${esc(v.category)}</span>${v.duration ? `<span class="dur">${esc(v.duration)}</span>` : ""}</div>
-        <div class="card-body"><h3>${esc(L(v.title) || "…")}</h3><div class="card-meta">${[v.type === "client" ? v.client : "", v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")}</div></div>`;
-      $(".thumb", a).prepend(img(v.yt, L(v.title)));
-      grid.append(a); return a;
-    });
+    cards = EDIT().map(v => { const a = makeCard(v); grid.append(a); return a; });
     applyFilter(true); observeReveal(cards.filter(c => !c.hidden && c.parentElement === grid), 6);
   }
   function applyFilter(instant) {
@@ -216,7 +250,16 @@
     state.cat = b.dataset.v; $$(".chip", $("#filters")).forEach(c => c.classList.toggle("is-on", c === b)); applyFilter();
   });
 
+  /* accordion (panel order, FAQ, panduan script) */
+  const bindAccordion = root => root.addEventListener("click", e => {
+    const q = e.target.closest(".qa-q"); if (!q || !root.contains(q)) return;
+    const item = q.parentElement, open = !item.classList.contains("open");
+    $$(".qa", root).forEach(o => { o.classList.remove("open"); $(".qa-q", o).setAttribute("aria-expanded", "false"); });
+    if (open) { item.classList.add("open"); q.setAttribute("aria-expanded", "true"); }
+  });
+
   /* order panel (ringkas, animasi buka-tutup mulus) */
+  const qaHtml = (q, aHtml, open) => `<div class="qa${open ? " open" : ""}"><button class="qa-q" aria-expanded="${open ? "true" : "false"}">${esc(q)}</button><div class="qa-a"><div>${aHtml}</div></div></div>`;
   function orderHtml(kind) {
     if (kind === "price") return `<div class="plans">${window.PRICING.map(p => `
         <div class="plan${p.popular ? " pop" : ""}">${p.popular ? `<span class="pop-tag">${esc(t("order.popular"))}</span>` : ""}
@@ -226,7 +269,7 @@
           <a class="btn btn-sm" href="${esc(contactUrl(t("msg.pkg").replace("{n}", L(p.name))))}" target="_blank" rel="noopener">${esc(t("order.pick"))}</a>
         </div>`).join("")}</div><p class="order-note">${esc(t("order.note"))}</p>`;
     if (kind === "steps") return `<ol class="steps">${[1, 2, 3, 4].map(i => `<li><b>0${i}</b><h4>${esc(t("step." + i + "t"))}</h4><p>${esc(t("step." + i + "d"))}</p></li>`).join("")}</ol>`;
-    return window.FAQ.map(f => `<div class="qa"><button class="qa-q" aria-expanded="false">${esc(L(f.q))}</button><div class="qa-a"><div><p>${esc(L(f.a))}</p></div></div></div>`).join("");
+    return window.FAQ.map(f => qaHtml(L(f.q), `<p>${esc(L(f.a))}</p>`)).join("");
   }
   function renderOrder() {
     $("#order-wa").href = contactUrl(t("msg.generic"));
@@ -236,12 +279,7 @@
     if (state.order) inner.innerHTML = `<div class="oi">${orderHtml(state.order)}</div>`;
   }
   $("#order-tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.order = state.order === b.dataset.o ? "" : b.dataset.o; renderOrder(); });
-  $("#order-inner").addEventListener("click", e => {
-    const q = e.target.closest(".qa-q"); if (!q) return;
-    const item = q.parentElement, open = !item.classList.contains("open");
-    $$(".qa", $("#order-inner")).forEach(o => { o.classList.remove("open"); $(".qa-q", o).setAttribute("aria-expanded", "false"); });
-    if (open) { item.classList.add("open"); q.setAttribute("aria-expanded", "true"); }
-  });
+  bindAccordion($("#order-inner"));
 
   /* hover preview (desktop saja) — pakai IFrame API tanpa mode playlist, jadi tidak ada tombol prev/pause/next */
   let hov = { card: null, timer: 0, player: null };
@@ -274,7 +312,7 @@
   /* ---------- STORE ---------- */
   const pThumb = p => p.images[0]
     ? `<img src="${esc(p.images[0])}" alt="${esc(L(p.name))}" loading="lazy">`
-    : ico("store");
+    : ico(p.kind === "script" ? "code" : "store");
   let productEls = [];
   function renderStore() {
     const tags = [...new Set(PR.map(p => p.tag).filter(Boolean))];
@@ -284,7 +322,7 @@
     main.innerHTML = ""; extra.innerHTML = "";
     productEls = PR.map(p => {
       const a = document.createElement("a");
-      a.className = "product glass"; a.href = `#/p/${p.id}`; a.dataset.tag = p.tag || "";
+      a.className = "product glass"; a.href = itemHash(p); a.dataset.tag = p.tag || "";
       a.innerHTML = `<div class="p-img">${pThumb(p)}${p.tag ? `<span class="badge">${esc(p.tag)}</span>` : ""}</div>
         <div class="p-body"><h3>${esc(L(p.name))}</h3><p>${esc(L(p.header))}</p>
           <div class="p-foot"><span class="p-price">${esc(p.price || "")}</span><span class="btn btn-sm">${esc(t("store.see"))}${ico("arrow")}</span></div></div>`;
@@ -301,11 +339,11 @@
     distribute("store", productEls);
   });
 
-  /* slider produk */
+  /* slider (produk & script) */
   const slides = $("#slides"), dots = $("#dots");
   let slideIdx = 0;
   function buildSlider(p) {
-    slides.innerHTML = (p.images.length ? p.images : [""]).map(src => `<div class="slide">${src ? `<img src="${esc(src)}" alt="${esc(L(p.name))}" draggable="false">` : ico("store")}</div>`).join("");
+    slides.innerHTML = (p.images.length ? p.images : [""]).map(src => `<div class="slide">${src ? `<img src="${esc(src)}" alt="${esc(L(p.name))}" draggable="false">` : ico(p.kind === "script" ? "code" : "store")}</div>`).join("");
     const n = slides.children.length;
     dots.innerHTML = n > 1 ? Array.from({ length: n }, (_, i) => `<button data-i="${i}" aria-label="Image ${i + 1}"></button>`).join("") : "";
     $("#s-prev").hidden = $("#s-next").hidden = n < 2;
@@ -317,33 +355,66 @@
   $("#s-prev").onclick = () => goSlide(slideIdx - 1); $("#s-next").onclick = () => goSlide(slideIdx + 1);
   dots.addEventListener("click", e => { const b = e.target.closest("button"); if (b) goSlide(+b.dataset.i); });
 
-  /* modal produk */
+  /* modal detail (produk & script) */
   const pmodal = $("#pmodal");
-  function fillP() {
-    const p = curP, i = PR.indexOf(p);
-    $("#p-no").textContent = pad(i + 1); $("#p-total").textContent = pad(PR.length);
-    $("#p-tag").textContent = p.tag || ""; $("#p-tag").hidden = !p.tag;
-    $("#p-title").textContent = L(p.name); $("#p-header").textContent = L(p.header); $("#p-header").hidden = !p.header;
-    $("#p-price").textContent = p.price || ""; $("#p-desc").textContent = L(p.desc);
-    const buy = $("#p-buy"); buy.href = p.url || "#"; buy.setAttribute("aria-disabled", p.url ? "false" : "true");
-    $("#pprev").disabled = $("#pnext").disabled = PR.length < 2;
+  function fillScript(p) {
+    $("#sx-code").textContent = p.loader || "";
+    const games = (p.games || []), feats = (p.features || []);
+    $("#sx-games").innerHTML = games.map(g => `<span class="tag${g.soon ? " soon" : ""}">${esc(L(g.label))}</span>`).join("");
+    $("#sx-games-l").hidden = $("#sx-games").hidden = !games.length;
+    $("#sx-feats").innerHTML = feats.map(f => `<div>${esc(L(f.t))}<small>${esc(L(f.s))}</small></div>`).join("");
+    $("#sx-feats-l").hidden = $("#sx-feats").hidden = !feats.length;
+    const stepsHtml = (p.steps || []).length ? `<ol class="sx-steps">${p.steps.map(s => `<li>${esc(L(s))}</li>`).join("")}</ol>` : "";
+    $("#sx-guide").innerHTML = (stepsHtml ? qaHtml(t("script.steps"), stepsHtml, true) : "") + (p.guide || []).map(g => qaHtml(L(g.q), `<p>${esc(L(g.a))}</p>`)).join("");
+    $("#sx-note").textContent = L(p.note) || "";
   }
-  function openP(id) {
-    const p = byP[id]; if (!p) return; const changed = curP !== p; curP = p; closeV(false); stopPreview();
+  bindAccordion($("#sx-guide"));
+  function fillP() {
+    const p = curP, list = listOfItem(p), script = p.kind === "script";
+    pmodal.classList.toggle("is-script", script);
+    $("#p-no").textContent = pad(list.indexOf(p) + 1); $("#p-total").textContent = pad(list.length);
+    $("#p-tag").textContent = [p.tag, script && p.status ? L(p.status) : ""].filter(Boolean).join(" • "); $("#p-tag").hidden = !p.tag;
+    $("#p-title").textContent = L(p.name); $("#p-header").textContent = L(p.header); $("#p-header").hidden = !p.header;
+    $("#p-price").textContent = p.price || ""; $("#p-price").hidden = script || !p.price;
+    $("#p-desc").textContent = L(p.desc);
+    $("#p-script").hidden = !script;
+    const buy = $("#p-buy"); buy.hidden = script; buy.href = p.url || "#"; buy.setAttribute("aria-disabled", p.url ? "false" : "true");
+    $("#sx-copy").hidden = !script || !p.loader;
+    const gh = $("#sx-gh"); gh.hidden = !script || !p.url; gh.href = p.url || "#";
+    if (script) fillScript(p);
+    $("#pprev").disabled = $("#pnext").disabled = list.length < 2;
+  }
+  function openP(key) {
+    const p = byItem[key]; if (!p) return; const changed = curP !== p; curP = p; closeV(false); stopPreview();
     fillP(); if (changed) buildSlider(p);
     pmodal.classList.add("open"); pmodal.setAttribute("aria-hidden", "false"); lockBody();
   }
   function closeP(updateHash = true) {
     if (!curP) return; curP = null;
     pmodal.classList.remove("open"); pmodal.setAttribute("aria-hidden", "true"); lockBody();
-    if (updateHash && /^#\/p\//.test(location.hash)) history.replaceState(null, "", location.pathname + location.search + "#" + activeId);
+    if (updateHash && /^#\/[ps]\//.test(location.hash)) history.replaceState(null, "", location.pathname + location.search + "#" + activeId);
   }
-  const stepP = d => { const i = PR.indexOf(curP); location.replace("#/p/" + PR[(i + d + PR.length) % PR.length].id); };
+  const stepP = d => { const list = listOfItem(curP), i = list.indexOf(curP); location.replace(itemHash(list[(i + d + list.length) % list.length])); };
   pmodal.addEventListener("click", e => { if (e.target.closest("[data-pclose]")) closeP(); });
   $("#pprev").onclick = () => stepP(-1); $("#pnext").onclick = () => stepP(1);
+  $("#sx-copy").onclick = async () => { if (curP && curP.loader && await copyText(curP.loader)) toast(t("script.copied")); };
 
   /* ---------- OTHER ---------- */
   function renderOther() {
+    /* script & tools */
+    $("#scripts").innerHTML = SC.map(s => `
+      <a class="product glass" href="${esc(itemHash(s))}">
+        <div class="p-img wide">${pThumb(s)}${s.tag ? `<span class="badge">${esc(s.tag)}</span>` : ""}${s.status ? `<span class="chip-status">${esc(L(s.status))}</span>` : ""}</div>
+        <div class="p-body"><h3>${esc(L(s.name))}</h3><p>${esc(L(s.header))}</p>
+          <div class="p-foot"><span></span><span class="btn btn-sm">${esc(t("script.open"))}${ico("arrow")}</span></div></div>
+      </a>`).join("");
+    $("#scripts-h").hidden = !SC.length;
+    /* video lain (tutorial dll) */
+    stopPreview();
+    const ov = $("#ovideos"); ov.innerHTML = "";
+    OTV().forEach(v => ov.append(makeCard(v)));
+    $("#ovideos-h").hidden = !OTV().length;
+    /* game */
     $("#games").innerHTML = window.GAMES.map(g => {
       const r = (g.placeId && ext.roblox[g.placeId]) || {}, name = L(g.name) || r.name || "Game", image = g.image || r.image;
       return `<article class="game glass">
@@ -353,9 +424,10 @@
           ${g.url ? `<a class="btn btn-sm" href="${esc(g.url)}" target="_blank" rel="noopener noreferrer">${esc(t("game.play"))}${ico("arrow")}</a>` : `<span class="btn btn-sm btn-ghost" aria-disabled="true">${esc(t("game.soon"))}</span>`}</div>
       </article>`;
     }).join("");
+    $("#games-h").hidden = !window.GAMES.length;
     $("#olinks").innerHTML = window.OTHER_LINKS.filter(l => l.url).map(l => linkEl(l, false)).join("");
     $("#olinks-h").hidden = !$("#olinks .link");
-    observeReveal([...$$(".game"), ...$$("#olinks .link")], 6);
+    observeReveal([...$$("#scripts .product"), ...$$("#ovideos .card"), ...$$(".game"), ...$$("#olinks .link")], 6);
   }
 
   /* ---------- i18n ---------- */
@@ -365,7 +437,7 @@
     document.title = `${S.name} — ${L(S.role)}`;
     $("#lang").dataset.l = lang; $$("#lang button").forEach(b => b.classList.toggle("is-on", b.dataset.lang === lang));
     renderBio(); if (statsDone) { statsDone = false; countUp(); }
-    renderSeg(); renderFilters(); renderOrder(); renderStore(); renderOther();
+    renderDiscover(); renderSeg(); renderFilters(); renderOrder(); renderStore(); renderOther();
     if (cur) fillModal(); if (curP) fillP();
     labelMore("videos"); labelMore("store");
     requestAnimationFrame(() => { placeSeg(); placeDock(); });
@@ -376,21 +448,24 @@
   });
 
   /* ---------- dock: scroll-spy + indikator ---------- */
-  const secs = ["bio", "edit", "store", "other"], navLinks = $$("#nav a"), ind = $("#ind"), nav = $("#nav"), bar = $("#progress");
+  const nav = $("#nav"), ind = $("#ind"), bar = $("#progress");
+  const navMap = Object.fromEntries(["bio", "discover", "edit", "store", "other"].map(id => [id, $(`a[href="#${id}"]`, nav)]));
+  const secs = () => ["bio", "discover", "edit", "store", "other"].filter(id => !navMap[id].hidden);
   let activeId = "bio";
   function placeDock() {
-    const a = navLinks[secs.indexOf(activeId)]; if (!a) return;
+    if (navMap[activeId].hidden) activeId = "bio";
+    const a = navMap[activeId];
     ind.style.width = a.offsetWidth + "px"; ind.style.transform = `translateX(${a.offsetLeft}px)`; ind.classList.add("ready");
-    navLinks.forEach(x => x.classList.toggle("on", x === a));
+    Object.values(navMap).forEach(x => x.classList.toggle("on", x === a));
     const target = a.offsetLeft - (nav.clientWidth - a.offsetWidth) / 2;
     if (nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: target, behavior: calm ? "auto" : "smooth" });
   }
   function onScroll() {
-    const h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+    const h = document.documentElement, max = h.scrollHeight - h.clientHeight, list = secs();
     bar.style.transform = `scaleX(${max > 0 ? h.scrollTop / max : 0})`;
     let id = "bio";
-    secs.forEach(s => { if ($("#" + s).getBoundingClientRect().top <= innerHeight * .38) id = s; });
-    if (max > 0 && h.scrollTop >= max - 4) id = "other";
+    list.forEach(s => { if ($("#" + s).getBoundingClientRect().top <= innerHeight * .38) id = s; });
+    if (max > 0 && h.scrollTop >= max - 4) id = list[list.length - 1];
     if (id !== activeId) { activeId = id; placeDock(); }
   }
   let scrollTick = false;
@@ -400,17 +475,17 @@
 
   /* ---------- pointer effects (desktop) ---------- */
   if (fine) {
-    const cu = $("#cursor"); let mx = innerWidth / 2, my = innerHeight / 2, cx = mx, cy = my, over = false;
+    const cu = $("#cursor"), root = $("main"); let mx = innerWidth / 2, my = innerHeight / 2, cx = mx, cy = my, over = false;
     addEventListener("mousemove", e => { mx = e.clientX; my = e.clientY; document.documentElement.style.setProperty("--mx", mx + "px"); document.documentElement.style.setProperty("--my", my + "px"); }, { passive: true });
     (function loop() { cx += (mx - cx) * .2; cy += (my - cy) * .2; cu.style.transform = `translate3d(${cx}px,${cy}px,0) scale(${over ? 1 : 0})`; cu.style.opacity = over ? 1 : 0; requestAnimationFrame(loop); })();
-    $("#edit").addEventListener("mouseover", e => {
+    root.addEventListener("mouseover", e => {
       const c = e.target.closest(".card"); over = !!c; if (c && c !== hov.card && !calm) startPreview(c);
     });
-    $("#edit").addEventListener("mouseleave", () => { over = false; stopPreview(); });
-    $("#edit").addEventListener("mouseout", e => {
+    root.addEventListener("mouseleave", () => { over = false; stopPreview(); });
+    root.addEventListener("mouseout", e => {
       const c = e.target.closest(".card"); if (c && !c.contains(e.relatedTarget)) { c.style.transform = ""; if (hov.card === c) stopPreview(); }
     });
-    $("#edit").addEventListener("mousemove", e => {
+    root.addEventListener("mousemove", e => {
       const c = e.target.closest(".card"); if (!c || calm) return;
       const r = c.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
       c.style.setProperty("--x", x + "px"); c.style.setProperty("--y", y + "px");
@@ -429,8 +504,8 @@
     loadAPI(() => { if (!player) player = new YT.Player("yt", { width: "100%", height: "100%", videoId: v.yt, playerVars: { rel: 0, modestbranding: 1, playsinline: 1, autoplay: 1 }, events: { onReady: e => e.target.playVideo() } }); });
   }
   function fillModal() {
-    const v = cur, ids = modal._ids || [];
-    $("#m-no").textContent = pad(ALL.indexOf(v) + 1); $("#m-total").textContent = pad(ALL.length);
+    const v = cur, ids = modal._ids || [], list = v.type === "other" ? OTV() : EDIT();
+    $("#m-no").textContent = pad(list.indexOf(v) + 1); $("#m-total").textContent = pad(list.length);
     $("#m-cat").textContent = v.category; $("#m-title").textContent = L(v.title);
     $("#m-desc").textContent = L(v.desc) || ""; $("#m-desc").hidden = !v.desc;
     $("#m-meta").innerHTML = [[t("modal.client"), v.type === "client" ? v.client : ""], [t("modal.cat"), v.category], [t("modal.uploaded"), longDate(v.uploaded)], [t("modal.views"), v.views != null ? new Intl.NumberFormat(loc()).format(v.views) : ""], [t("modal.dur"), v.duration]]
@@ -442,7 +517,7 @@
   }
   function open(id) {
     const v = byId[id]; if (!v) return; const first = !cur; cur = v; closeP(false); stopPreview();
-    const vis = visibleIds(); modal._ids = vis.includes(id) ? vis : ALL.map(x => x.id); modal._i = modal._ids.indexOf(id);
+    const vis = visibleIds(); modal._ids = v.type === "other" ? OTV().map(x => x.id) : vis.includes(id) ? vis : EDIT().map(x => x.id); modal._i = modal._ids.indexOf(id);
     fillModal(); modal.classList.add("open"); modal.setAttribute("aria-hidden", "false"); lockBody();
     playVideo(v); if (first) setTimeout(() => $(".close", modal).focus({ preventScroll: true }), 60);
   }
@@ -454,11 +529,11 @@
   }
   const step = d => { const ids = modal._ids, nid = ids[(modal._i + d + ids.length) % ids.length]; location.replace("#/v/" + nid); };
   const route = () => {
-    const v = location.hash.match(/^#\/v\/([\w-]+)/), p = location.hash.match(/^#\/p\/([\w-]+)/);
+    const v = location.hash.match(/^#\/v\/([\w-]+)/), p = location.hash.match(/^#\/([ps])\/([\w-]+)/);
     if (v && byId[v[1]]) {
-      const x = byId[v[1]]; if (x.type !== state.type) { state.type = x.type; state.cat = "all"; renderSeg(); renderFilters(); applyFilter(true); }
+      const x = byId[v[1]]; if (x.type !== "other" && x.type !== state.type) { state.type = x.type; state.cat = "all"; renderSeg(); renderFilters(); applyFilter(true); }
       open(v[1]);
-    } else if (p && byP[p[1]]) openP(p[1]);
+    } else if (p && byItem[p[1] + "/" + p[2]]) openP(p[1] + "/" + p[2]);
     else { closeV(false); closeP(false); }
   };
   addEventListener("hashchange", route);
@@ -472,8 +547,8 @@
 
   /* ---------- judul otomatis kalau title dikosongkan ---------- */
   const setTitle = (v, title) => {
-    v.title = title; const c = cards.find(c => c.dataset.id === v.id);
-    if (c) { $("h3", c).textContent = title; $("img", c).alt = title; }
+    v.title = title; $$(`.card[data-id="${CSS.escape(v.id)}"]`).forEach(c => { $("h3", c).textContent = title; $("img", c).alt = title; });
+    if (v.discover) renderDiscover();
     if (cur && cur.id === v.id) fillModal();
   };
   ALL.filter(v => !v.title).forEach(v =>
@@ -494,7 +569,7 @@
     if (st._roblox) { ext.roblox = st._roblox; changed = true; }
     if (!changed) return;
     sortAll(); renderBio(); if (statsDone) { statsDone = false; countUp(); }
-    renderCards(); renderOther(); if (cur) fillModal();
+    renderDiscover(); renderCards(); renderOther(); if (cur) fillModal();
   }).catch(() => {});
 
   /* ---------- boot ---------- */

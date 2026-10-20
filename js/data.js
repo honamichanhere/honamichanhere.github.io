@@ -59,12 +59,18 @@ window.LINKS = [
 
    Wajib     : yt (link penuh atau ID), category
    type      : "client" (hasil edit buat client) atau "own" (konten sendiri). Kosong = "client"
+               "other" = bukan showcase edit (mis. tutorial). Tampil di blok Other, tidak masuk hitungan statistik
+   discover  : true atau angka urutan (1 = paling depan) = ikut tampil di blok Discover (sorotan)
    Disarankan: client, views, uploaded (TAHUN-BULAN-TANGGAL)
    Opsional  : title (kosong = otomatis dari YouTube), duration, tools, desc {id,en},
                preview (detik mulai preview saat hover di desktop), featured: true
    Tayang, judul, tanggal, durasi diisi otomatis oleh GitHub Action (lihat README).
    ========================================================= */
 window.VIDEOS = [
+  /* Tutorial script Mugiwara HUB (tampil di Other + Discover). Judul, tayang, tanggal, durasi diisi otomatis dari YouTube */
+  { yt: "https://www.youtube.com/watch?v=64MjgGJADjA", type: "other", category: "Tutorial", discover: 2,
+    desc: { id: "Panduan langkah demi langkah memakai Mugiwara HUB.", en: "Step-by-step guide to using Mugiwara HUB." } },
+
   /* [CONTOH] video di bawah ini cuma contoh pakai film open-source Blender. Hapus lalu ganti. */
   { yt: "eRsGyueVLvQ", type: "client", title: "Sintel — Brand Film", client: "Northwind", category: "Brand Film", views: 48200, uploaded: "2026-10-12", duration: "14:48", featured: true, preview: 60,
     tools: ["After Effects", "Topaz Video AI"],
@@ -105,6 +111,7 @@ window.VIDEOS = [
    desc    : deskripsi lengkap, boleh beberapa baris (pisahkan dengan \n)
    url     : link produk di Avora (tombol Buy)
    tag     : label kategori (otomatis jadi filter)
+   discover: (opsional) true atau angka urutan = ikut tampil di blok Discover
    ========================================================= */
 window.PRODUCTS = [
   /* [CONTOH] ganti semuanya. Gambar contoh ada di assets/store/ */
@@ -131,11 +138,69 @@ window.PRODUCTS = [
 ];
 
 /* =========================================================
+   SCRIPT & TOOLS (blok Other) — klik kartu = popup detail seperti produk
+   Isi: gambar yang bisa digeser, deskripsi, loader (tombol salin), game yang didukung, fitur, panduan, catatan.
+
+   name, header, desc : teks dua bahasa
+   status   : badge kecil, mis. { id: "Berfungsi", en: "Working" }
+   images   : daftar gambar (yang pertama jadi thumbnail)
+   loader   : script yang disalin pengunjung
+   games    : [{ label: "Evade" }, { label: { id: "...", en: "..." }, soon: true }]  (soon = abu-abu)
+   features : [{ t: "Judul", s: "Keterangan" }]
+   steps    : daftar langkah cara pakai
+   guide    : [{ q: "Judul", a: "Isi" }] untuk panel lipat (executor, troubleshooting, dll)
+   note     : catatan / peringatan di bagian bawah
+   url      : link repo / halaman (tombol "Lihat di GitHub")
+   discover : true atau angka urutan = ikut tampil di blok Discover
+   ========================================================= */
+window.SCRIPTS = [
+  { id: "mugiwara-hub", name: "Mugiwara HUB", tag: "Script", discover: 1,
+    status: { id: "Berfungsi", en: "Working" },
+    header: { id: "Script hub Roblox modern dengan modul untuk tiap game", en: "A modern Roblox script hub with per-game modules" },
+    desc: {
+      id: "Script hub Roblox yang rapi dan modular, dengan fitur global dan modul khusus untuk tiap game yang didukung. Ringan, mudah dipakai, dan rutin diperbarui.",
+      en: "A clean, modular Roblox script hub with global features and dedicated modules for each supported game. Lightweight, easy to use, and updated regularly.",
+    },
+    images: ["assets/other/mugiwara-hub.webp"],
+    loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/honamichanhere/Mugiwara-HUB/refs/heads/main/Main.lua"))()',
+    games: [
+      { label: { id: "Universal", en: "Universal" } },
+      { label: "Evade" },
+      { label: { id: "Game lain segera hadir", en: "More coming soon" }, soon: true },
+    ],
+    features: [
+      { t: "Global Tab", s: { id: "Jalan di semua game", en: "Works in every game" } },
+      { t: "Game Modules", s: { id: "Fitur khusus tiap game", en: "Per-game features" } },
+      { t: "Clean UI", s: { id: "Simpel dan responsif", en: "Simple & responsive" } },
+      { t: "Key System", s: { id: "Akses premium", en: "Premium access" } },
+    ],
+    steps: [
+      { id: "Buka executor kamu (Xeno, Delta, atau executor lain yang didukung).", en: "Open your executor (Xeno, Delta, or any supported executor)." },
+      { id: "Salin loader script di atas.", en: "Copy the loader script above." },
+      { id: "Masuk ke salah satu game yang didukung di Roblox.", en: "Join one of the supported games on Roblox." },
+      { id: "Tempel script ke executor lalu tekan Execute.", en: "Paste the script into the executor and press Execute." },
+      { id: "Ambil key, masukkan, dan nikmati hub-nya.", en: "Get your key, enter it, and enjoy the hub." },
+    ],
+    guide: [
+      { q: { id: "Executor yang didukung", en: "Supported executors" },
+        a: { id: "Dites di Xeno (PC) dan Delta (Mobile). Kebanyakan executor yang mendukung loadstring dan HttpGet seharusnya bisa.", en: "Tested on Xeno (PC) and Delta (Mobile). Most executors with loadstring and HttpGet support should work." } },
+      { q: { id: "Script tidak jalan?", en: "Script not working?" },
+        a: { id: "Pastikan script tersalin utuh, executor sudah versi terbaru, dan kamu ada di game yang didukung. Kalau masih gagal, laporkan di komunitas.", en: "Make sure you copied the full script, your executor is up to date, and you are in a supported game. If it still fails, report it in the community." } },
+    ],
+    note: {
+      id: "Pakai dengan risiko sendiri. Script pihak ketiga bisa melanggar Ketentuan Layanan Roblox dan berisiko membuat akun terkena tindakan.",
+      en: "Use scripts at your own risk. Using third-party scripts may violate Roblox Terms of Service and can result in account action.",
+    },
+    url: "https://github.com/honamichanhere/Mugiwara-HUB" },
+];
+
+/* =========================================================
    GAME ROBLOX (blok Other)
    url      : link game
    placeId  : (opsional) angka di link roblox.com/games/ANGKA/...  → gambar, jumlah pemain & visit
               diambil OTOMATIS oleh GitHub Action
    image    : (opsional) gambar manual kalau tidak pakai placeId
+   discover : (opsional) true atau angka urutan = ikut tampil di blok Discover
    ========================================================= */
 window.GAMES = [
   /* [CONTOH] game orang lain cuma buat contoh tampilan live stats. Ganti dengan game lu. */

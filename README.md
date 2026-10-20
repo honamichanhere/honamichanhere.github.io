@@ -1,13 +1,14 @@
 # Honami — Link in Bio
 
-Website link-in-bio dengan tema kaca hitam + aksen neon kuning/orange/merah, dua bahasa (ID/EN). Empat blok dengan pintasan yang selalu tampil di atas:
+Website link-in-bio dengan tema kaca hitam + aksen neon kuning/orange/merah, dua bahasa (ID/EN). Blok dengan pintasan yang selalu tampil di atas:
 
 | Blok | Isi |
 |---|---|
 | **Biodata** | Banner, profil, badge, bio, tools, statistik otomatis, tombol link utama (WA, IG, TikTok, YouTube, Discord, Email) |
+| **Discover** | Blok sorotan di bawah Biodata. **Hanya muncul kalau ada item** yang diberi `discover` |
 | **Edit** | Showcase video dalam dua tab: **Client** dan **Konten Sendiri**. Hover video di desktop = preview. Ada panel ringkas Harga / Cara kerja / FAQ |
 | **Store** | Etalase aset digital. Klik kartu = popup detail (thumbnail geser, deskripsi lengkap, harga, tombol Buy ke Avora) |
-| **Other** | Game Roblox (dengan pemain & visit otomatis) dan link lain |
+| **Other** | Script & Tools, video tutorial, game Roblox (dengan pemain & visit otomatis), dan link lain |
 
 Video di-host di YouTube, situs di GitHub Pages. Tanpa build step. Semua isi diatur dari **`js/data.js`**.
 
@@ -37,6 +38,14 @@ Buka `js/data.js` di GitHub (klik file → ikon pensil ✏️), salin satu baris
 **Tombol See more:** halaman hanya menampilkan 10 video (dan 10 produk di Store) langsung. Kalau lebih, muncul tombol "See N more" yang membuka sisanya seperti dropdown, lalu berganti jadi "Show less" untuk menyembunyikannya lagi. Ubah jumlahnya lewat `showLimit` di `SITE` (`js/data.js`).
 
 Preview hover hanya jalan di desktop. Di HP, ketuk kartu langsung membuka pemutar. Video harus **boleh di-embed** di pengaturan YouTube.
+
+## Discover (item sorotan)
+Tambahkan `discover: true` (atau angka urutan, 1 = paling depan) ke item mana pun di `js/data.js`: video di `VIDEOS`, produk di `PRODUCTS`, script di `SCRIPTS`, atau game di `GAMES`. Item itu tetap tampil di tempat aslinya, dan **juga** muncul di blok Discover dengan label Spotlight. Kalau tidak ada item bertanda, blok Discover dan menunya otomatis hilang.
+
+## Script & Tools (blok Other)
+`SCRIPTS` di `js/data.js`. Kartu di Other dan Discover membuka popup detail: gambar yang bisa digeser, deskripsi, loader dengan tombol **Salin script**, game yang didukung, fitur, panduan (bisa dilipat), dan catatan. Kolom: `name`, `header`, `desc`, `status`, `images`, `loader`, `games`, `features`, `steps`, `guide`, `note`, `url` (tombol Lihat di GitHub), `discover`. Taruh gambar di `assets/other/`.
+
+**Video tutorial / non-showcase:** beri `type: "other"` pada video. Ia tampil di Other (bagian Tutorial & Video), tidak masuk tab Edit dan tidak dihitung di statistik.
 
 ## Link utama & Other
 - `SITE` — nama, `logo` (foto profil), `banner`, `role` (judul di bawah nama), `badges`, `tools`, `about`, `stats`.
