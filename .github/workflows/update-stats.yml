@@ -2,7 +2,7 @@ name: Update video stats
 
 on:
   schedule:
-    - cron: "0 */6 * * *"      # tiap 6 jam
+    - cron: "17 * * * *"       # tiap jam (menit ke-17 supaya tidak bentrok jam sibuk GitHub)
   workflow_dispatch:           # bisa dijalankan manual dari tab Actions
   push:
     paths: ["js/data.js", "scripts/update-stats.mjs"]

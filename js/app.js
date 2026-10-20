@@ -21,7 +21,7 @@
   let lang = store.get("lang") || (/^id\b/i.test(navigator.language || "") ? "id" : "en");
   if (!D[lang]) lang = "id";
   const state = { type: "client", cat: "all", tag: "all", order: "" };
-  let cur = null, curP = null, player = null, apiState = 0, statsDone = false, ext = { roblox: {} };
+  let cur = null, curP = null, player = null, apiState = 0, statsDone = false, ext = { roblox: {}, sold: {} };
 
   const t = k => D[lang][k] ?? k;
   const L = x => (x && typeof x === "object" ? (x[lang] ?? x.id ?? "") : x ?? "");
@@ -42,6 +42,9 @@
   const PR = window.PRODUCTS.map((p, i) => ({ ...p, kind: "product", id: p.id || "p" + (i + 1), images: p.images || [] }));
   const SC = (window.SCRIPTS || []).map((s, i) => ({ ...s, kind: "script", id: s.id || "s" + (i + 1), images: s.images || [] }));
   const byItem = Object.fromEntries([...PR, ...SC].map(p => [p.kind[0] + "/" + p.id, p]));
+  /* jumlah terjual: otomatis (stats.json, dibaca dari halaman Avora) lalu cadangan manual */
+  const soldOf = p => { const n = ext.sold[p.url] ?? p.sold; return n == null ? null : Number(n); };
+  const soldTxt = p => { const n = soldOf(p); return n == null ? "" : `${n >= 10000 ? compact(n) : new Intl.NumberFormat(loc()).format(n)} ${t("sold")}`; };
   const itemHash = p => `#/${p.kind[0]}/${p.id}`;
   const listOfItem = p => (p.kind === "script" ? SC : PR);
 
@@ -138,7 +141,7 @@
     const out = [];
     SC.filter(s => s.discover).forEach(s => out.push({ kind: "script", r: rank(s), title: L(s.name), sub: L(s.header), href: itemHash(s), image: s.images[0], icon: "code", cta: t("spot.open") }));
     ALL.filter(v => v.discover).forEach(v => out.push({ kind: "video", r: rank(v), title: L(v.title) || "…", sub: (descOf(v).split("\n").map(x => x.trim()).find(Boolean) || "").slice(0, 150) || [v.category, v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).join(" • "), href: `#/v/${v.id}`, yt: v.yt, cta: t("spot.open") }));
-    PR.filter(p => p.discover).forEach(p => out.push({ kind: "product", r: rank(p), title: L(p.name), sub: L(p.header), href: itemHash(p), image: p.images[0], icon: "store", price: p.price, cta: t("store.see") }));
+    PR.filter(p => p.discover).forEach(p => out.push({ kind: "product", r: rank(p), title: L(p.name), sub: L(p.header), href: itemHash(p), image: p.images[0], icon: "store", price: [p.price, soldTxt(p)].filter(Boolean).join(" • "), cta: t("store.see") }));
     window.GAMES.filter(g => g.discover && g.url).forEach(g => { const r = (g.placeId && ext.roblox[g.placeId]) || {}; out.push({ kind: "game", r: rank(g), title: L(g.name) || r.name || "Game", sub: L(g.desc), href: g.url, external: true, image: g.image || r.image, icon: "roblox", cta: t("game.play") }); });
     return out.sort((a, b) => a.r - b.r);
   }
@@ -327,7 +330,7 @@
       const a = document.createElement("a");
       a.className = "product glass"; a.href = itemHash(p); a.dataset.tag = p.tag || "";
       a.innerHTML = `<div class="p-img">${pThumb(p)}${p.tag ? `<span class="badge">${esc(p.tag)}</span>` : ""}</div>
-        <div class="p-body"><h3>${esc(L(p.name))}</h3><p>${esc(L(p.header))}</p>
+        <div class="p-body"><h3>${esc(L(p.name))}</h3><p>${esc(L(p.header))}</p>${soldTxt(p) ? `<span class="p-sold">${ico("store")}${esc(soldTxt(p))}</span>` : ""}
           <div class="p-foot"><span class="p-price">${esc(p.price || "")}</span><span class="btn btn-sm">${esc(t("store.see"))}${ico("arrow")}</span></div></div>`;
       a.hidden = state.tag !== "all" && p.tag !== state.tag;
       main.append(a); return a;
@@ -380,6 +383,7 @@
     $("#p-title").textContent = L(p.name); $("#p-header").textContent = L(p.header); $("#p-header").hidden = !p.header;
     $("#p-price").textContent = p.price || ""; $("#p-price").hidden = script || !p.price;
     $("#p-desc").textContent = L(p.desc);
+    { const st = script ? "" : soldTxt(p); $("#p-sold").hidden = !st; $("#p-sold").innerHTML = st ? `${ico("store")}${esc(st)}` : ""; }
     $("#p-script").hidden = !script;
     const buy = $("#p-buy"); buy.hidden = script; buy.href = p.url || "#"; buy.setAttribute("aria-disabled", p.url ? "false" : "true");
     $("#sx-copy").hidden = !script || !p.loader;
@@ -570,9 +574,10 @@
       changed = true;
     });
     if (st._roblox) { ext.roblox = st._roblox; changed = true; }
+    if (st._sold) { ext.sold = st._sold; changed = true; }
     if (!changed) return;
     sortAll(); renderBio(); if (statsDone) { statsDone = false; countUp(); }
-    renderDiscover(); renderCards(); renderOther(); if (cur) fillModal();
+    renderDiscover(); renderStore(); renderCards(); renderOther(); if (cur) fillModal(); if (curP) fillP();
   }).catch(() => {});
 
   /* ---------- boot ---------- */

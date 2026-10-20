@@ -1,5 +1,6 @@
 // Ambil data otomatis lalu simpan ke js/stats.json:
 //  - YouTube Data API : tayang, judul, tanggal upload, durasi (butuh env YT_API_KEY, kalau kosong dilewati)
+//  - Avora (halaman publik): jumlah terjual per produk (karena Avora belum punya API)
 //  - Roblox (publik)  : nama, jumlah pemain, total kunjungan, ikon, untuk game yang punya placeId
 import fs from "node:fs";
 import vm from "node:vm";
@@ -60,6 +61,23 @@ if (places.length) {
     }
     if (Object.keys(rb).length) { out._roblox = rb; console.log(`Roblox: ${Object.keys(rb).length} game dicek.`); }
   } catch (e) { console.error("Roblox:", String(e)); failed = true; }
+}
+
+/* ---------- Avora: jumlah terjual dari halaman produk publik (Avora belum punya API) ---------- */
+const avoraUrls = [...new Set((win.PRODUCTS || []).map(p => String(p.url || "").trim()).filter(u => /^https:\/\/avora\.id\/\S+$/.test(u)))];
+if (avoraUrls.length) {
+  const sold = { ...(out._sold || {}) };
+  for (const u of avoraUrls) {
+    try {
+      const res = await fetch(u, { headers: { "user-agent": "HonamiLinkInBioStats/1.0 (+https://honamichanhere.github.io)", "accept-language": "id" }, signal: AbortSignal.timeout(20000) });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const mm = (await res.text()).match(/(\d[\d.,]*)\s*orang\s+sudah\s+beli/i);
+      if (!mm) { console.warn("Avora: angka terjual tidak ditemukan di " + u + " (struktur halaman berubah?). Nilai lama dipakai."); }
+      else sold[u] = Number(mm[1].replace(/[.,]/g, ""));
+    } catch (e) { console.warn("Avora: gagal membaca " + u + " — " + String(e)); }
+    await new Promise(r => setTimeout(r, 1500));
+  }
+  if (Object.keys(sold).length) { out._sold = sold; console.log("Avora: " + avoraUrls.length + " produk dicek."); }
 }
 
 const next = JSON.stringify(out, null, 2) + "\n";

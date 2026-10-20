@@ -108,12 +108,24 @@ window.VIDEOS = [
    images  : daftar gambar thumbnail (bisa digeser di popup), mis. ["assets/store/preset-1.webp", "assets/store/preset-2.webp"]
              gambar pertama jadi thumbnail kartu. Kosong = gambar otomatis
    desc    : deskripsi lengkap, boleh beberapa baris (pisahkan dengan \n)
-   url     : link produk di Avora (tombol Buy)
+   url     : link produk di Avora (tombol Buy). Jumlah terjual dibaca OTOMATIS dari halaman ini tiap jam
+   sold    : (opsional) jumlah terjual manual, dipakai sebagai cadangan kalau pembacaan otomatis gagal
    tag     : label kategori (otomatis jadi filter)
    discover: (opsional) true atau angka urutan = ikut tampil di blok Discover
    ========================================================= */
 window.PRODUCTS = [
-  /* [CONTOH] ganti semuanya. Gambar contoh ada di assets/store/ */
+  /* Produk asli */
+  { id: "korless-visual", name: { id: "Korless Visual - Roblox Script", en: "Korless Visual - Roblox Script" }, tag: "Roblox", price: "Rp 10.000",
+    header: { id: "Efek visual Korless untuk Mobile/Desktop", en: "Korless visual effect for Mobile/Desktop" },
+    images: ["assets/store/korless-visual.webp"],
+    desc: {
+      id: "Korless Visual untuk Mobile/Desktop\n• Mendukung Evade\n• Mendukung game lain\n• Mendukung R6/R15\n• Risiko rendah\n\nPENTING! Baca sebelum membeli. Script ini hanya untuk efek visual: efek Korless hanya terlihat di layar kamu sendiri. Perlu dipahami bahwa metode ini punya risiko karena memakai exploit, dan pembeli menanggung penuh semua risikonya. Aku hanya menjual script ini bagi yang berminat.",
+      en: "Korless Visual for Mobile/Desktop\n• Evade support\n• Other games support\n• R6/R15 support\n• Low risk\n\nIMPORTANT! Read before purchase. This script is for visual purposes only: the Korless effect is visible only on your screen. Please be aware that this method carries risks, as it relies on an exploit, and the buyer assumes full responsibility. I am simply selling the script to those interested.",
+    },
+    sold: 337,
+    url: "https://avora.id/honamihere/korless-visual-roblox-script" },
+
+  /* [CONTOH] produk di bawah ini ganti semuanya. Gambar contoh ada di assets/store/ */
   { name: { id: "Preset Color Grading Vol.1", en: "Color Grading Presets Vol.1" }, tag: "Preset", price: "Rp 49rb",
     header: { id: "30 preset warna sinematik", en: "30 cinematic color presets" },
     images: ["assets/store/sample-1.svg", "assets/store/sample-2.svg", "assets/store/sample-3.svg"],
