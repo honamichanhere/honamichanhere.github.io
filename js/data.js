@@ -7,24 +7,25 @@
 window.SITE = {
   name: "Honami",
   logo: "assets/logo.png",       // foto profil / logo (ganti file assets/logo.png)
-  role: { id: "Video Editor", en: "Video Editor" },
+  banner: "assets/banner.webp",  // banner di atas kartu profil (kosong = tanpa banner)
+  role: { id: "Roblox Technical Artist", en: "Roblox Technical Artist" },   // judul di bawah nama
   whatsapp: "6288986045729",     // format internasional tanpa + dan spasi (dipakai tombol "Pesan edit")
   email: "ichinosehonamisan16@gmail.com",
   location: "Indonesia",
   showreel: "aqz-KE-bpKQ",       // [CONTOH] ID/link YouTube buat showreel (tampil di desktop)
-  tools: ["After Effects", "CapCut", "Topaz Video AI"],
+  tools: ["After Effects", "CapCut", "Topaz Video AI", "Roblox Studio"],
 
   /* Badge kecil di bawah nama */
   badges: [
-    { id: "Video Editor", en: "Video Editor" },
-    { id: "Roblox Dev", en: "Roblox Dev" },          // [CONTOH]
-    { id: "Terima proyek", en: "Open for work" },
+    { id: "Roblox Development", en: "Roblox Development" },
+    { id: "Programmer", en: "Programmer" },
+    { id: "Photo/Video Editing", en: "Photo/Video Editing" },
   ],
 
   /* [CONTOH] Bio singkat — ganti dengan ceritamu */
   about: {
-    id: "Halo, gua Honami. Gua ngedit video dari yang pendek sampai panjang, bikin game Roblox, dan jualan aset digital. (Teks ini contoh, ganti dengan ceritamu.)",
-    en: "Hi, I'm Honami. I edit videos from short to long-form, build Roblox games and sell digital assets. (Placeholder text, replace with your story.)",
+    id: "Halo, gua Honami. Gua ngedit video dari yang pendek sampai panjang, bikin game Roblox, dan jualan aset digital.",
+    en: "Hi, I'm Honami. I edit videos from short to long-form, build Roblox games and sell digital assets.",
   },
 
   /* Statistik. auto: "videos" | "clients" | "views" dihitung otomatis dari VIDEOS. Tanpa auto = isi manual. */

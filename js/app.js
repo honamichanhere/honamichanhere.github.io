@@ -70,6 +70,7 @@
   $("#brand").innerHTML = S.logo ? `<img src="${esc(S.logo)}" alt=""><span>${esc(S.name)}</span>` : `<i class="mark"></i><span>${esc(S.name)}</span>`;
   if (S.logo) { $("#avatar").src = S.logo; $("#avatar").hidden = false; $$("link[rel=icon]").forEach(l => { l.href = S.logo; l.type = "image/png"; }); }
   $$("[data-site]").forEach(el => el.textContent = S[el.dataset.site] ?? "");
+  if (S.banner) { $("#banner").src = S.banner; $("#banner-wrap").hidden = false; }
   $("#year").textContent = new Date().getFullYear();
   $("#tools").innerHTML = (S.tools || []).map(x => `<span class="tag">${esc(x)}</span>`).join("");
   $("#reel-img").src = thumb(REEL.yt); $("#reel-img").addEventListener("error", e => e.target.src = thumbLo(REEL.yt));
@@ -96,6 +97,7 @@
   function renderBio() {
     $("#badges").innerHTML = (S.badges || []).map(b => `<span>${esc(L(b))}</span>`).join("");
     $("#about-text").textContent = L(S.about);
+    $("#headline").textContent = L(S.role);
     $("#links").innerHTML = window.LINKS.filter(l => l.url).map(l => linkEl(l, true)).join("");
     observeReveal($$(".link"), 6);
     $("#stats").innerHTML = S.stats.map(s => {
