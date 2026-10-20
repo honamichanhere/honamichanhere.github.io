@@ -106,7 +106,7 @@ window.VIDEOS = [
    name    : judul produk
    header  : kalimat pendek di bawah judul
    price   : harga (teks bebas)
-   images  : daftar gambar thumbnail (bisa digeser di popup), mis. ["assets/store/preset-1.webp", "assets/store/preset-2.webp"]
+   images  : daftar gambar thumbnail (bisa digeser di popup), mis. ["assets/store/produk-1.webp", "assets/store/produk-2.webp"]
              gambar pertama jadi thumbnail kartu. Kosong = gambar otomatis
    desc    : deskripsi lengkap, boleh beberapa baris (pisahkan dengan \n)
    url     : link produk di Avora (tombol Buy). Jumlah terjual dibaca OTOMATIS dari halaman ini tiap jam
@@ -145,28 +145,6 @@ window.PRODUCTS = [
     },
     sold: 6,
     url: "https://avora.id/honamihere/my-ccquality-pack-after-effect" },
-
-  /* [CONTOH] produk di bawah ini ganti semuanya. Gambar contoh ada di assets/store/ */
-  { name: { id: "Preset Color Grading Vol.1", en: "Color Grading Presets Vol.1" }, tag: "Preset", price: "Rp 49rb",
-    header: { id: "30 preset warna sinematik", en: "30 cinematic color presets" },
-    images: ["assets/store/sample-1.svg", "assets/store/sample-2.svg", "assets/store/sample-3.svg"],
-    desc: { id: "30 preset warna sinematik untuk Premiere Pro dan CapCut.\nSekali klik, footage langsung punya look film.\n\nIsi paket:\n• 30 file preset\n• Panduan pemakaian\n• Update gratis", en: "30 cinematic color presets for Premiere Pro and CapCut.\nOne click gives your footage a film look.\n\nWhat is inside:\n• 30 preset files\n• Usage guide\n• Free updates" },
-    url: "https://avora.id" },
-  { name: { id: "Paket Transisi Smooth", en: "Smooth Transition Pack" }, tag: "Transisi", price: "Rp 79rb",
-    header: { id: "50 transisi siap pakai", en: "50 ready-to-use transitions" },
-    images: ["assets/store/sample-2.svg", "assets/store/sample-3.svg"],
-    desc: { id: "50 transisi siap pakai, tinggal drag & drop ke timeline.\nKompatibel dengan After Effects dan CapCut.", en: "50 ready-to-use transitions, just drag & drop onto your timeline.\nCompatible with After Effects and CapCut." },
-    url: "https://avora.id" },
-  { name: { id: "Sound Effect Pack", en: "Sound Effect Pack" }, tag: "SFX", price: "Rp 59rb",
-    header: { id: "200+ SFX bebas royalti", en: "200+ royalty-free SFX" },
-    images: [],
-    desc: { id: "200+ sound effect bebas royalti untuk konten kamu.", en: "200+ royalty-free sound effects for your content." },
-    url: "https://avora.id" },
-  { name: { id: "Template Roblox UI", en: "Roblox UI Template" }, tag: "Roblox", price: "Rp 99rb",
-    header: { id: "Kit UI siap pakai", en: "Ready-to-use UI kit" },
-    images: [],
-    desc: { id: "Kit UI siap pakai untuk game Roblox, lengkap dengan tombol, panel, dan ikon.", en: "Ready-to-use UI kit for Roblox games with buttons, panels and icons." },
-    url: "https://avora.id" },
 ];
 
 /* =========================================================

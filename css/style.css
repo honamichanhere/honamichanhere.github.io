@@ -451,3 +451,6 @@ em{animation:none;filter:none}
 .p-foot .btn{width:100%;justify-content:center;padding:.8rem 1.2rem;font-size:.98rem;white-space:nowrap}
 .spot-foot{flex-wrap:wrap}
 .spot-foot .btn{white-space:nowrap}
+
+/* tombol utama (WhatsApp) melebar penuh di atas, tombol sosial lain tersusun rapi di bawahnya */
+.links .link.primary{grid-column:1/-1}
