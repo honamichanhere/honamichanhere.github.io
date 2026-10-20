@@ -47,7 +47,8 @@ window.LINKS = [
   { label: "Instagram", sub: "@afiksptra_",                                  icon: "ig",      url: "https://www.instagram.com/afiksptra_" },
   { label: "TikTok",    sub: "@honamichanhere",                              icon: "tt",      url: "https://www.tiktok.com/@honamichanhere" },
   { label: "YouTube",   sub: "@honamihere",                                  icon: "yt",      url: "https://www.youtube.com/@honamihere" },
-  { label: "Discord",   sub: { id: "Gabung komunitas", en: "Join the community" }, icon: "discord", url: "" },   // [CONTOH] isi link server Discord
+  { label: "Discord",   sub: "EVACORE",                                      icon: "discord", url: "https://discord.gg/djmrevtSV7" },
+  { label: "Roblox",    sub: "@honamichandesu",                              icon: "roblox",  url: "https://www.roblox.com/users/8485135229/profile" },
   { label: "Email",     sub: "ichinosehonamisan16@gmail.com",                icon: "mail",    url: "mailto:ichinosehonamisan16@gmail.com", copy: true },   // copy: true = klik menyalin alamat email
 ];
 
@@ -124,6 +125,26 @@ window.PRODUCTS = [
     },
     sold: 337,
     url: "https://avora.id/honamihere/korless-visual-roblox-script" },
+
+  { id: "evade-visual-emotes", name: { id: "Evade Visual Emotes - Roblox Script", en: "Evade Visual Emotes - Roblox Script" }, tag: "Roblox", price: "Rp 20.000",
+    header: { id: "Ganti emote secara instan di Evade (Mobile/Desktop)", en: "Swap emotes instantly in Evade (Mobile/Desktop)" },
+    images: ["assets/store/evade-visual-emotes.webp"],
+    desc: {
+      id: "Evade Visual Emotes untuk Mobile/Desktop\n• Khusus Evade\n• Ganti emote secara instan\n• Semua emote bisa ditukar\n• Rockin Stride hanya bisa ditukar ke Kickback\n• Zombie Stride hanya bisa ditukar ke Classic Dance\n\nBACA SEBELUM MEMBELI! Skrip ini hanya untuk tujuan visual: emote hanya terlihat di layar kamu. Perlu dipahami bahwa metode ini berisiko tinggi jika dipakai bersamaan dengan siaran langsung karena bergantung pada exploit, dan pembeli menanggung sepenuhnya segala risikonya. Aku hanya menjual skrip ini kepada pihak yang berminat dan memahami risikonya.",
+      en: "Evade Visual Emotes for Mobile/Desktop\n• Evade only\n• Swap emotes instantly\n• All emotes can be swapped\n• Rockin Stride can only swap to Kickback\n• Zombie Stride can only swap to Classic Dance\n\nREAD BEFORE BUYING! This script is visual-only: the emote effects only show up on your screen. Using it while livestreaming can be pretty risky, since it relies on an exploit, and you are fully responsible for anything that happens to your account. I am only selling the script to people who are interested and understand the risks.",
+    },
+    sold: 66,
+    url: "https://avora.id/honamihere/evade-visual-emotes-roblox-script" },
+
+  { id: "cc-quality-pack", name: { id: "My CC+Quality Pack - After Effect", en: "My CC+Quality Pack - After Effect" }, tag: "Editing", price: "Rp 50.000",
+    header: { id: "Setup CC dan kualitas After Effects yang aku pakai sendiri", en: "The exact CC & quality setup I use in After Effects" },
+    images: ["assets/store/cc-quality-pack.webp"],
+    desc: {
+      id: "Setup CC dan kualitas yang aku pakai sendiri untuk kontenku.\n\nDibuat supaya footage terlihat lebih bersih, tajam, dan rapi tanpa menghabiskan berjam-jam mengatur semuanya dari nol.\n\nIsi paket:\n• Color correction / color grading\n• Peningkatan kualitas\n• Penajaman dan detail\n• Preset After Effects siap pakai\n• Setup workflow pribadiku\n\nCATATAN PLUGIN! Beberapa efek di paket ini memakai plugin After Effects pihak ketiga.\nPlugin yang dibutuhkan:\n• Boris FX - Sapphire\n• Boris FX - BCC Looks\n\nPembelian sekali bayar. Produk digital, tidak ada barang fisik yang dikirim.",
+      en: "The exact CC & quality setup I personally use for my content.\n\nBuilt to give your footage a cleaner, sharper and more polished look without spending hours tweaking everything from scratch.\n\nWhat's included:\n• Color Correction / Color Grading\n• Quality enhancement\n• Sharpening & detail enhancement\n• Ready-to-use After Effects presets\n• My personal workflow setup\n\nPLUGIN NOTICE! Some effects in this pack use third-party After Effects plugins.\nPlugins needed:\n• Boris FX - Sapphire\n• Boris FX - BCC Looks\n\nOne-time purchase. Digital product. No physical item will be shipped.",
+    },
+    sold: 6,
+    url: "https://avora.id/honamihere/my-ccquality-pack-after-effect" },
 
   /* [CONTOH] produk di bawah ini ganti semuanya. Gambar contoh ada di assets/store/ */
   { name: { id: "Preset Color Grading Vol.1", en: "Color Grading Presets Vol.1" }, tag: "Preset", price: "Rp 49rb",
