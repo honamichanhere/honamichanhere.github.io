@@ -12,7 +12,6 @@ window.SITE = {
   whatsapp: "6288986045729",     // format internasional tanpa + dan spasi (dipakai tombol "Pesan edit")
   email: "ichinosehonamisan16@gmail.com",
   location: "Indonesia",
-  showreel: "aqz-KE-bpKQ",       // [CONTOH] ID/link YouTube buat showreel (tampil di desktop)
   tools: ["After Effects", "CapCut", "Topaz Video AI", "Roblox Studio"],
 
   /* Badge kecil di bawah nama */
@@ -48,7 +47,7 @@ window.LINKS = [
   { label: "TikTok",    sub: "@honamichanhere",                              icon: "tt",      url: "https://www.tiktok.com/@honamichanhere" },
   { label: "YouTube",   sub: "@honamihere",                                  icon: "yt",      url: "https://www.youtube.com/@honamihere" },
   { label: "Discord",   sub: { id: "Gabung komunitas", en: "Join the community" }, icon: "discord", url: "" },   // [CONTOH] isi link server Discord
-  { label: "Email",     sub: "ichinosehonamisan16@gmail.com",                icon: "mail",    url: "mailto:ichinosehonamisan16@gmail.com" },
+  { label: "Email",     sub: "ichinosehonamisan16@gmail.com",                icon: "mail",    url: "mailto:ichinosehonamisan16@gmail.com", copy: true },   // copy: true = klik menyalin alamat email
 ];
 
 /* =========================================================
@@ -94,25 +93,40 @@ window.VIDEOS = [
 
 /* =========================================================
    STORE (aset digital) — pembayaran & pengiriman file lewat Avora
-   url   : link produk di Avora (tombol Buy / See item mengarah ke sini)
-   cta   : "buy" (tombol Buy) atau "see" (tombol See item)
-   image : path gambar produk, mis. "assets/store/preset-pack.webp" (kosong = gambar otomatis)
-   tag   : label kategori (otomatis jadi filter)
+   Kartu menampilkan: thumbnail, title, header, harga, tombol See Item.
+   Klik kartu = popup detail: thumbnail geser, title, header, deskripsi lengkap, harga, tombol Buy.
+
+   name    : judul produk
+   header  : kalimat pendek di bawah judul
+   price   : harga (teks bebas)
+   images  : daftar gambar thumbnail (bisa digeser di popup), mis. ["assets/store/preset-1.webp", "assets/store/preset-2.webp"]
+             gambar pertama jadi thumbnail kartu. Kosong = gambar otomatis
+   desc    : deskripsi lengkap, boleh beberapa baris (pisahkan dengan \n)
+   url     : link produk di Avora (tombol Buy)
+   tag     : label kategori (otomatis jadi filter)
    ========================================================= */
 window.PRODUCTS = [
-  /* [CONTOH] ganti semuanya */
-  { name: { id: "Preset Color Grading Vol.1", en: "Color Grading Presets Vol.1" }, tag: "Preset", price: "Rp 49rb", image: "",
-    desc: { id: "30 preset warna sinematik untuk Premiere & CapCut.", en: "30 cinematic color presets for Premiere & CapCut." },
-    cta: "buy", url: "https://avora.id" },
-  { name: { id: "Paket Transisi Smooth", en: "Smooth Transition Pack" }, tag: "Transisi", price: "Rp 79rb", image: "",
-    desc: { id: "50 transisi siap pakai, tinggal drag & drop.", en: "50 ready-to-use transitions, just drag & drop." },
-    cta: "buy", url: "https://avora.id" },
-  { name: { id: "Sound Effect Pack", en: "Sound Effect Pack" }, tag: "SFX", price: "Rp 59rb", image: "",
-    desc: { id: "200+ SFX bebas royalti buat konten.", en: "200+ royalty-free SFX for your content." },
-    cta: "see", url: "https://avora.id" },
-  { name: { id: "Template Roblox UI", en: "Roblox UI Template" }, tag: "Roblox", price: "Rp 99rb", image: "",
-    desc: { id: "Kit UI siap pakai untuk game Roblox.", en: "Ready-to-use UI kit for Roblox games." },
-    cta: "see", url: "https://avora.id" },
+  /* [CONTOH] ganti semuanya. Gambar contoh ada di assets/store/ */
+  { name: { id: "Preset Color Grading Vol.1", en: "Color Grading Presets Vol.1" }, tag: "Preset", price: "Rp 49rb",
+    header: { id: "30 preset warna sinematik", en: "30 cinematic color presets" },
+    images: ["assets/store/sample-1.svg", "assets/store/sample-2.svg", "assets/store/sample-3.svg"],
+    desc: { id: "30 preset warna sinematik untuk Premiere Pro dan CapCut.\nSekali klik, footage langsung punya look film.\n\nIsi paket:\n• 30 file preset\n• Panduan pemakaian\n• Update gratis", en: "30 cinematic color presets for Premiere Pro and CapCut.\nOne click gives your footage a film look.\n\nWhat is inside:\n• 30 preset files\n• Usage guide\n• Free updates" },
+    url: "https://avora.id" },
+  { name: { id: "Paket Transisi Smooth", en: "Smooth Transition Pack" }, tag: "Transisi", price: "Rp 79rb",
+    header: { id: "50 transisi siap pakai", en: "50 ready-to-use transitions" },
+    images: ["assets/store/sample-2.svg", "assets/store/sample-3.svg"],
+    desc: { id: "50 transisi siap pakai, tinggal drag & drop ke timeline.\nKompatibel dengan After Effects dan CapCut.", en: "50 ready-to-use transitions, just drag & drop onto your timeline.\nCompatible with After Effects and CapCut." },
+    url: "https://avora.id" },
+  { name: { id: "Sound Effect Pack", en: "Sound Effect Pack" }, tag: "SFX", price: "Rp 59rb",
+    header: { id: "200+ SFX bebas royalti", en: "200+ royalty-free SFX" },
+    images: [],
+    desc: { id: "200+ sound effect bebas royalti untuk konten kamu.", en: "200+ royalty-free sound effects for your content." },
+    url: "https://avora.id" },
+  { name: { id: "Template Roblox UI", en: "Roblox UI Template" }, tag: "Roblox", price: "Rp 99rb",
+    header: { id: "Kit UI siap pakai", en: "Ready-to-use UI kit" },
+    images: [],
+    desc: { id: "Kit UI siap pakai untuk game Roblox, lengkap dengan tombol, panel, dan ikon.", en: "Ready-to-use UI kit for Roblox games with buttons, panels and icons." },
+    url: "https://avora.id" },
 ];
 
 /* =========================================================

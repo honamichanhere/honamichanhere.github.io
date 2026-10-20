@@ -4,9 +4,9 @@ Website link-in-bio dengan tema kaca hitam + aksen neon kuning/orange/merah, dua
 
 | Blok | Isi |
 |---|---|
-| **Biodata** | Profil, badge, bio, statistik otomatis, tombol link utama (WA, IG, TikTok, YouTube, Discord, Email) |
+| **Biodata** | Banner, profil, badge, bio, tools, statistik otomatis, tombol link utama (WA, IG, TikTok, YouTube, Discord, Email) |
 | **Edit** | Showcase video dalam dua tab: **Client** dan **Konten Sendiri**. Hover video di desktop = preview. Ada panel ringkas Harga / Cara kerja / FAQ |
-| **Store** | Etalase aset digital, tombol Buy / See item mengarah ke Avora |
+| **Store** | Etalase aset digital. Klik kartu = popup detail (thumbnail geser, deskripsi lengkap, harga, tombol Buy ke Avora) |
 | **Other** | Game Roblox (dengan pemain & visit otomatis) dan link lain |
 
 Video di-host di YouTube, situs di GitHub Pages. Tanpa build step. Semua isi diatur dari **`js/data.js`**.
@@ -37,12 +37,26 @@ Buka `js/data.js` di GitHub (klik file → ikon pensil ✏️), salin satu baris
 Preview hover hanya jalan di desktop. Di HP, ketuk kartu langsung membuka pemutar. Video harus **boleh di-embed** di pengaturan YouTube.
 
 ## Link utama & Other
-- `LINKS` — tombol di blok Biodata. `icon`: `wa ig tt yt discord mail roblox store link`. `url` kosong = disembunyikan.
+- `SITE` — nama, `logo` (foto profil), `banner`, `role` (judul di bawah nama), `badges`, `tools`, `about`, `stats`.
+- `LINKS` — tombol di blok Biodata. `icon`: `wa ig tt yt discord mail roblox store link`. `url` kosong = disembunyikan. `copy: true` = klik menyalin alamat email (dipakai untuk Email).
 - `OTHER_LINKS` — link tambahan di blok Other.
 - `GAMES` — game Roblox. Isi `placeId` (angka di link `roblox.com/games/ANGKA/...`) supaya gambar, jumlah pemain, dan visit otomatis. Atau isi `image` manual.
 
 ## Store
-`PRODUCTS` di `js/data.js`. Tiap produk: `name`, `tag` (jadi filter), `price`, `image` (opsional), `desc`, `cta` (`"buy"` atau `"see"`), dan `url` (link produk di Avora). Pembayaran dan pengiriman file diurus Avora. **Jangan simpan file aset berbayar di repo ini** (repo-nya public).
+`PRODUCTS` di `js/data.js`. Kartu menampilkan thumbnail, title, header, harga, dan tombol **See Item**. Klik kartu membuka popup detail dengan thumbnail yang bisa digeser, deskripsi lengkap, harga, dan tombol **Buy**.
+
+| Kolom | Isi |
+|---|---|
+| `name` | Judul produk |
+| `header` | Kalimat pendek di bawah judul |
+| `price` | Harga (teks bebas) |
+| `images` | Daftar gambar, mis. `["assets/store/a.webp", "assets/store/b.webp"]`. Yang pertama jadi thumbnail kartu. Kosong = gambar otomatis |
+| `desc` | Deskripsi lengkap, baris baru dengan `
+` |
+| `url` | Link produk di Avora (tombol Buy) |
+| `tag` | Label, otomatis jadi filter |
+
+Taruh gambar produk di folder `assets/store/` (disarankan WebP, di bawah 200 KB per gambar). Pembayaran dan pengiriman file diurus Avora. **Jangan simpan file aset berbayar di repo ini** (repo-nya public).
 
 ## Update otomatis (YouTube + Roblox)
 GitHub Action `.github/workflows/update-stats.yml` jalan tiap 6 jam dan setiap `js/data.js` berubah. Ia mengisi `js/stats.json` (dibaca website otomatis).

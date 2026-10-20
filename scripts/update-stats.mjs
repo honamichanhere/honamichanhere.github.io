@@ -18,7 +18,7 @@ let failed = false;
 const key = process.env.YT_API_KEY;
 if (!key) console.log("YT_API_KEY belum diset — lewati YouTube.");
 else {
-  const ids = [...new Set([...(win.VIDEOS || []).map(v => ytId(v.yt)), ytId(win.SITE?.showreel)].filter(Boolean))];
+  const ids = [...new Set([...(win.VIDEOS || []).map(v => ytId(v.yt))].filter(Boolean))];
   const dur = iso => {
     const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(iso || ""); if (!m) return "";
     const [h, mi, s] = [m[1] || 0, m[2] || 0, m[3] || 0].map(Number), p = n => String(n).padStart(2, "0");
