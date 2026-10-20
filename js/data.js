@@ -6,7 +6,7 @@
 
 window.SITE = {
   name: "Honami",
-  logo: "assets/logo.png",       // foto profil / logo (ganti file assets/logo.png)
+  logo: "assets/logo.jpg",       // foto profil / logo (ganti file assets/logo.jpg, ukuran cukup 256x256)
   banner: "assets/banner.webp",  // banner di atas kartu profil (kosong = tanpa banner)
   role: { id: "Roblox Technical Artist", en: "Roblox Technical Artist" },   // judul di bawah nama
   whatsapp: "6288986045729",     // format internasional tanpa + dan spasi (dipakai tombol "Pesan edit")

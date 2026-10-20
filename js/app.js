@@ -6,6 +6,10 @@
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const fine = matchMedia("(hover:hover) and (pointer:fine)").matches;
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* hanya izinkan skema aman untuk link yang berasal dari data (blokir javascript: dll) */
+  const safeUrl = u => { u = String(u || "").trim(); return /^(https?:\/\/|mailto:|tel:|#|assets\/|\.\/)/i.test(u) ? u : ""; };
+  [window.LINKS, window.OTHER_LINKS, window.GAMES, window.PRODUCTS].forEach(arr => (arr || []).forEach(o => { if ("url" in o) o.url = safeUrl(o.url); }));
+  window.SITE.whatsapp = String(window.SITE.whatsapp || "").replace(/\D/g, "");
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch {} },
@@ -78,7 +82,7 @@
 
   /* ---------- static bits ---------- */
   $("#brand").innerHTML = S.logo ? `<img src="${esc(S.logo)}" alt=""><span>${esc(S.name)}</span>` : `<i class="mark"></i><span>${esc(S.name)}</span>`;
-  if (S.logo) { $("#avatar").src = S.logo; $("#avatar").hidden = false; $$("link[rel=icon]").forEach(l => { l.href = S.logo; l.type = "image/png"; }); }
+  if (S.logo) { $("#avatar").src = S.logo; $("#avatar").hidden = false; $$("link[rel=icon]").forEach(l => { l.href = S.logo; l.type = /\.jpe?g$/i.test(S.logo) ? "image/jpeg" : /\.webp$/i.test(S.logo) ? "image/webp" : "image/png"; }); }
   $$("[data-site]").forEach(el => el.textContent = S[el.dataset.site] ?? "");
   if (S.banner) { $("#banner").src = S.banner; $("#banner-wrap").hidden = false; }
   $("#year").textContent = new Date().getFullYear();

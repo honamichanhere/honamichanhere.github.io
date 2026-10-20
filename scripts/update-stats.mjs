@@ -50,7 +50,7 @@ if (places.length) {
     const uids = [...new Set(Object.values(uni))];
     if (uids.length) {
       const g = await (await fetch(`https://games.roblox.com/v1/games?universeIds=${uids.join(",")}`)).json();
-      const th = await (await fetch(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(",")}&returnPolicy=PlaceHolder&size=512x512&format=Png&isCircular=false`)).json();
+      const th = await (await fetch(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(",")}&returnPolicy=PlaceHolder&size=256x256&format=Png&isCircular=false`)).json();
       const gById = Object.fromEntries((g.data || []).map(x => [x.id, x]));
       const tById = Object.fromEntries((th.data || []).map(x => [x.targetId, x.imageUrl]));
       for (const [p, u] of Object.entries(uni)) {
