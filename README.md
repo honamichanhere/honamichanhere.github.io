@@ -1,53 +1,58 @@
-# Portfolio — Honami
+# Honami — Link in Bio
 
-Website portofolio video editor: tema kaca hitam dengan aksen neon kuning/orange/merah, dua bahasa (ID/EN), daftar karya, harga, proses, FAQ, dan kontak. Video di-host di YouTube, situs di GitHub Pages. Tanpa build step.
+Website link-in-bio dengan tema kaca hitam + aksen neon kuning/orange/merah, dua bahasa (ID/EN). Empat blok dengan pintasan yang selalu tampil di atas:
 
-## Cara menambah video (paling gampang)
+| Blok | Isi |
+|---|---|
+| **Biodata** | Profil, badge, bio, statistik otomatis, tombol link utama (WA, IG, TikTok, YouTube, Discord, Email) |
+| **Edit** | Showcase video dalam dua tab: **Client** dan **Konten Sendiri**. Hover video di desktop = preview. Ada panel ringkas Harga / Cara kerja / FAQ |
+| **Store** | Etalase aset digital, tombol Buy / See item mengarah ke Avora |
+| **Other** | Game Roblox (dengan pemain & visit otomatis) dan link lain |
 
-1. Upload videonya ke YouTube (Public atau Unlisted).
-2. Buka file **`js/data.js`** di GitHub (klik file → ikon pensil ✏️).
-3. Cari `window.VIDEOS = [`, lalu salin satu baris ini dan tempel di bawah baris terakhir (sebelum tanda `];`):
+Video di-host di YouTube, situs di GitHub Pages. Tanpa build step. Semua isi diatur dari **`js/data.js`**.
+
+> **Kembali ke versi lama:** tag `stable-checkpoint-1` (landing portofolio sebelum jadi link-in-bio).
+> Lihat https://github.com/honamichanhere/honamichanhere.github.io/releases/tag/stable-checkpoint-1
+
+## Menambah video (blok Edit)
+
+Buka `js/data.js` di GitHub (klik file → ikon pensil ✏️), salin satu baris ini ke bawah baris terakhir di `window.VIDEOS`, ganti isinya, lalu **Commit changes**. Situs update dalam 1–2 menit.
 
 ```js
-{ yt: "LINK_YOUTUBE", client: "Nama Client", category: "Reels", views: 1200, uploaded: "2026-10-19" },
+{ yt: "LINK_YOUTUBE", type: "client", client: "Nama Client", category: "Reels", uploaded: "2026-10-19" },
 ```
-
-4. Ganti isinya, lalu klik **Commit changes**. Tunggu 1–2 menit, website otomatis update.
 
 | Kolom | Isi |
 |---|---|
-| `yt` | Link YouTube lengkap atau ID-nya saja. **Wajib** |
-| `category` | Jenis video (Reels, Wedding, dll). Otomatis jadi tombol filter. **Wajib** |
+| `yt` | Link YouTube lengkap atau ID. **Wajib** |
+| `category` | Jenis video, otomatis jadi tombol filter. **Wajib** |
+| `type` | `"client"` (hasil edit buat client) atau `"own"` (konten sendiri). Kosong = client |
 | `client` | Nama client (opsional) |
-| `views` | Jumlah tayang, angka biasa tanpa titik: `1200` |
-| `uploaded` | Tanggal upload `TAHUN-BULAN-TANGGAL` |
-| `title` | Judul. **Kalau dikosongkan, diambil otomatis dari YouTube** |
-| `duration` | Durasi, mis. `"01:30"` (opsional) |
-| `tools` | Mis. `["After Effects", "CapCut"]` (opsional) |
-| `desc` | Deskripsi dua bahasa `{ id: "...", en: "..." }` (opsional) |
-| `featured` | `true` = jadi kartu besar (cukup satu video) |
+| `title` | Kosong = judul diambil otomatis dari YouTube |
+| `views`, `uploaded`, `duration` | Diisi otomatis oleh GitHub Action kalau `YT_API_KEY` sudah dipasang (angka manual jadi cadangan) |
+| `preview` | Detik mulai preview saat hover di desktop (opsional) |
+| `tools`, `desc` | Tools yang dipakai & deskripsi `{ id: "...", en: "..." }` (opsional) |
+| `featured` | `true` = tampil paling depan |
 
-Urutan video otomatis dari yang terbaru. Statistik di hero (jumlah video, total tayang, jumlah client) **dihitung otomatis** dari daftar ini. Kalau auto-update dinyalakan (lihat bawah), `views` dan data lain diisi otomatis dari YouTube dan menimpa angka manual.
+Preview hover hanya jalan di desktop. Di HP, ketuk kartu langsung membuka pemutar. Video harus **boleh di-embed** di pengaturan YouTube.
 
-## Bagian lain di `js/data.js`
-- `SITE` — nama, logo, WhatsApp, email, sosmed, showreel, tools, teks "Tentang"
-- `PRICING` — paket harga (**masih contoh**)
-- `FAQ` — pertanyaan umum (**masih contoh**)
+## Link utama & Other
+- `LINKS` — tombol di blok Biodata. `icon`: `wa ig tt yt discord mail roblox store link`. `url` kosong = disembunyikan.
+- `OTHER_LINKS` — link tambahan di blok Other.
+- `GAMES` — game Roblox. Isi `placeId` (angka di link `roblox.com/games/ANGKA/...`) supaya gambar, jumlah pemain, dan visit otomatis. Atau isi `image` manual.
 
-Semua yang bertanda `[CONTOH]` masih template, ganti kalau sudah siap. Teks UI (judul, tombol) ada di `js/i18n.js`. Teks dua bahasa ditulis `{ id: "...", en: "..." }`.
+## Store
+`PRODUCTS` di `js/data.js`. Tiap produk: `name`, `tag` (jadi filter), `price`, `image` (opsional), `desc`, `cta` (`"buy"` atau `"see"`), dan `url` (link produk di Avora). Pembayaran dan pengiriman file diurus Avora. **Jangan simpan file aset berbayar di repo ini** (repo-nya public).
+
+## Update otomatis (YouTube + Roblox)
+GitHub Action `.github/workflows/update-stats.yml` jalan tiap 6 jam dan setiap `js/data.js` berubah. Ia mengisi `js/stats.json` (dibaca website otomatis).
+
+**Setup YouTube (sekali saja):**
+1. https://console.cloud.google.com → buat project → aktifkan **YouTube Data API v3**.
+2. Credentials → Create credentials → **API key**. Application restrictions: **None**. API restrictions: **YouTube Data API v3**.
+3. Repo GitHub → Settings → Secrets and variables → Actions → secret `YT_API_KEY`.
+
+Roblox memakai API publik, tidak butuh key.
 
 ## Deploy
-GitHub Pages: Settings → Pages → Deploy from branch → `main` / root.
-
-## Update otomatis dari YouTube (tayang, judul, tanggal, durasi)
-
-GitHub Action `.github/workflows/update-stats.yml` jalan tiap 6 jam, mengambil data semua video di `js/data.js` dari YouTube Data API, lalu menyimpannya ke `js/stats.json`. Website membaca file itu otomatis.
-
-**Setup sekali saja:**
-1. Buka https://console.cloud.google.com → buat project baru.
-2. APIs & Services → Library → aktifkan **YouTube Data API v3**.
-3. APIs & Services → Credentials → Create credentials → **API key**. (Disarankan: batasi key ke YouTube Data API v3.)
-4. Di repo GitHub: Settings → Secrets and variables → Actions → New repository secret. Name: `YT_API_KEY`, isi: key tadi.
-5. Tab Actions → "Update video stats" → Run workflow (buat tes pertama).
-
-Key disimpan sebagai secret, tidak pernah muncul di website. Tanpa key, website tetap jalan memakai angka manual.
+GitHub Pages lewat workflow `.github/workflows/pages.yml` (otomatis setiap push ke `main`).

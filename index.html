@@ -2,17 +2,34 @@
 <html lang="id">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Portfolio — Video Editor</title>
-  <meta name="description" content="Portofolio video editor: Reels, wedding, company profile, YouTube. Lihat karya dan harga.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Honami — Link in Bio</title>
+  <meta name="description" content="Video editor, game dev Roblox, dan aset digital. Lihat karya edit, store, dan semua link di satu tempat.">
   <meta name="theme-color" content="#060607">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23060607'/%3E%3Cpath d='M9 9h14v14H9z' fill='none'/%3E%3Cpath d='M12 8l12 8-12 8z' fill='%23ffc72c'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23060607'/%3E%3Cpath d='M12 8l12 8-12 8z' fill='%23ffc72c'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Unbounded:wght@600;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <!-- icon sprite -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-wa" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
+      <symbol id="i-ig" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></symbol>
+      <symbol id="i-tt" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+      <symbol id="i-yt" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><path d="M9.75 15.02 15.5 11.75 9.75 8.48z"/></symbol>
+      <symbol id="i-discord" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="12" rx="4"/><path d="M7 11v4M5 13h4"/><path d="M16 12h.01M18.5 14h.01"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></symbol>
+      <symbol id="i-roblox" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></symbol>
+      <symbol id="i-store" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+      <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z" fill="currentColor"/></symbol>
+    </defs>
+  </svg>
+
   <!-- ambience -->
   <div class="bg" aria-hidden="true">
     <i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i>
@@ -20,128 +37,121 @@
   </div>
   <div class="grain" aria-hidden="true"></div>
   <div class="progress" id="progress" aria-hidden="true"></div>
-  <div class="cursor" id="cursor" aria-hidden="true"><span data-i18n="works.play">Putar</span></div>
+  <div class="cursor" id="cursor" aria-hidden="true"><svg class="ico"><use href="#i-play"/></svg></div>
 
-  <!-- header -->
-  <header class="top" id="top">
-    <div class="top-in glass">
-      <a class="brand" href="#top" aria-label="Home" id="brand"></a>
-      <nav class="nav" id="nav">
-        <a href="#works" data-i18n="nav.works">Karya</a>
-        <a href="#pricing" data-i18n="nav.pricing">Harga</a>
-        <a href="#process" data-i18n="nav.process">Proses</a>
-        <a href="#contact" data-i18n="nav.contact">Hubungi</a>
+  <!-- dock: pintasan selalu tampil -->
+  <header class="dock" id="top">
+    <div class="dock-in glass">
+      <a class="dock-brand" href="#bio" aria-label="Home" id="brand"></a>
+      <nav class="dock-nav" id="nav" aria-label="Sections">
+        <i class="dock-ind" id="ind"></i>
+        <a href="#bio" data-i18n="dock.bio">Biodata</a>
+        <a href="#edit" data-i18n="dock.edit">Edit</a>
+        <a href="#store" data-i18n="dock.store">Store</a>
+        <a href="#other" data-i18n="dock.other">Other</a>
       </nav>
-      <div class="top-r">
-        <div class="lang" id="lang" role="group" aria-label="Language">
-          <i class="lang-pill"></i>
-          <button data-lang="id" class="is-on">ID</button>
-          <button data-lang="en">EN</button>
-        </div>
-        <a class="btn btn-sm" id="top-cta" href="#contact" data-magnetic><span data-i18n="nav.contact">Hubungi</span></a>
+      <div class="lang" id="lang" role="group" aria-label="Language">
+        <i class="lang-pill"></i>
+        <button data-lang="id" class="is-on">ID</button>
+        <button data-lang="en">EN</button>
       </div>
     </div>
   </header>
 
   <main>
-    <!-- hero -->
-    <section class="hero" id="hero">
+    <!-- ========== BIODATA ========== -->
+    <section class="blk" id="bio">
       <div class="rays" aria-hidden="true"></div>
-      <div class="hero-in">
-        <p class="eyebrow"><i class="live"></i><span data-i18n="hero.eyebrow">Tersedia untuk proyek baru</span></p>
-        <div class="hero-main">
-          <div class="hero-left">
-            <h1 class="display" id="h1">
-              <span class="ln" style="--d:0"><span data-i18n="hero.l1"></span></span>
-              <span class="ln" style="--d:1"><span data-i18n="hero.l2"></span></span>
-              <span class="ln" style="--d:2"><span data-i18n="hero.l3"></span></span>
-            </h1>
-            <div class="hero-copy">
-              <p class="lede" data-i18n="hero.lede"></p>
-              <div class="ctas">
-                <a class="btn" href="#works" data-magnetic><span data-i18n="hero.cta1">Lihat karya</span><b aria-hidden="true">↓</b></a>
-                <a class="btn btn-ghost" id="hero-wa" href="#contact" target="_blank" rel="noopener" data-magnetic><span data-i18n="hero.cta2">WhatsApp</span></a>
-              </div>
+      <div class="bio-grid">
+        <div class="profile glass" data-reveal>
+          <div class="profile-top">
+            <img class="avatar" id="avatar" alt="" hidden>
+            <div>
+              <p class="hello" data-i18n="bio.hello">Halo, gua</p>
+              <h1 class="name" id="h1"><span data-site="name"></span></h1>
             </div>
           </div>
-          <div class="reel glass" id="reel">
+          <div class="badges" id="badges"></div>
+          <p class="about" id="about-text"></p>
+          <div class="tags" id="tools"></div>
+          <ul class="stats" id="stats"></ul>
+          <button class="btn btn-ghost reel-btn" id="reel-btn"><svg class="ico"><use href="#i-play"/></svg><span data-i18n="bio.reel">Putar showreel</span></button>
+        </div>
+
+        <div class="side">
+          <div class="links" id="links"></div>
+          <div class="reel glass" id="reel" data-reveal>
             <div class="reel-frame" id="reel-frame"><img id="reel-img" alt=""></div>
             <div class="reel-bar">
-              <span class="reel-tag"><i class="live"></i><span data-i18n="hero.live">Showreel</span></span>
-              <button class="reel-play" id="reel-play"><span data-i18n="hero.reel">Putar showreel</span><b aria-hidden="true">▶</b></button>
+              <span class="reel-tag"><i class="live"></i><span data-i18n="bio.live">Showreel</span></span>
+              <button class="reel-play" id="reel-play"><span data-i18n="bio.reel">Putar showreel</span><b aria-hidden="true">▶</b></button>
             </div>
           </div>
         </div>
       </div>
-
-      <ul class="stats" id="stats"></ul>
     </section>
 
-    <div class="marquee" aria-hidden="true"><div class="marquee-track" id="marquee"></div></div>
-
-    <!-- works -->
-    <section class="sec" id="works">
-      <header class="sec-head" data-reveal>
-        <h2 class="h2" data-i18n="works.title">Karya <em>pilihan</em></h2>
-        <p class="muted" data-i18n="works.sub"></p>
+    <!-- ========== EDIT ========== -->
+    <section class="blk" id="edit">
+      <header class="blk-head" data-reveal>
+        <h2 class="h2" data-i18n="edit.title">Edit <em>Showcase</em></h2>
+        <p class="muted" data-i18n="edit.sub"></p>
       </header>
-      <div class="filters" id="filters" data-reveal role="group" aria-label="Filter"></div>
+
+      <div class="edit-bar" data-reveal>
+        <div class="seg" id="seg" role="tablist">
+          <i class="seg-ind"></i>
+          <button role="tab" data-type="client" class="is-on"><span data-i18n="edit.client">Client</span> <b id="n-client"></b></button>
+          <button role="tab" data-type="own"><span data-i18n="edit.own">Konten Sendiri</span> <b id="n-own"></b></button>
+        </div>
+        <div class="filters" id="filters" role="group" aria-label="Filter"></div>
+      </div>
+
       <div class="grid" id="grid"></div>
-      <p class="empty" id="empty" hidden data-i18n="works.empty"></p>
-    </section>
+      <p class="empty muted" id="empty" hidden data-i18n="edit.empty"></p>
 
-    <!-- pricing -->
-    <section class="sec" id="pricing">
-      <header class="sec-head" data-reveal>
-        <h2 class="h2" data-i18n="pricing.title">Harga <em>jelas</em></h2>
-        <p class="muted" data-i18n="pricing.sub"></p>
-      </header>
-      <div class="plans" id="plans"></div>
-      <p class="note muted" data-i18n="pricing.note" data-reveal></p>
-    </section>
-
-    <!-- process + about -->
-    <section class="sec" id="process">
-      <header class="sec-head" data-reveal>
-        <h2 class="h2" data-i18n="process.title">Cara <em>kerja</em></h2>
-      </header>
-      <ol class="steps">
-        <li class="glass" data-reveal style="--i:0"><b>01</b><h3 data-i18n="process.1t"></h3><p data-i18n="process.1d"></p></li>
-        <li class="glass" data-reveal style="--i:1"><b>02</b><h3 data-i18n="process.2t"></h3><p data-i18n="process.2d"></p></li>
-        <li class="glass" data-reveal style="--i:2"><b>03</b><h3 data-i18n="process.3t"></h3><p data-i18n="process.3d"></p></li>
-        <li class="glass" data-reveal style="--i:3"><b>04</b><h3 data-i18n="process.4t"></h3><p data-i18n="process.4d"></p></li>
-      </ol>
-    </section>
-
-    <section class="sec about-faq">
-      <div class="about glass" data-reveal>
-        <img class="avatar" id="avatar" alt="" hidden>
-        <h2 class="h3" data-i18n="about.title">Tentang <em>gua</em></h2>
-        <p id="about-text"></p>
-        <p class="tools-label muted" data-i18n="about.tools">Tools</p>
-        <div class="tags" id="tools"></div>
+      <div class="order glass" id="order" data-reveal>
+        <div class="order-head">
+          <div>
+            <strong data-i18n="edit.orderHint">Mau videomu diedit juga?</strong>
+          </div>
+          <div class="order-tabs" id="order-tabs" role="tablist">
+            <button data-o="price" data-i18n="order.price">Harga</button>
+            <button data-o="steps" data-i18n="order.steps">Cara kerja</button>
+            <button data-o="faq" data-i18n="order.faq">FAQ</button>
+          </div>
+          <a class="btn btn-sm" id="order-wa" href="#order" target="_blank" rel="noopener"><span data-i18n="edit.order">Pesan edit</span><svg class="ico"><use href="#i-arrow"/></svg></a>
+        </div>
+        <div class="order-body" id="order-body"><div class="order-inner" id="order-inner"></div></div>
       </div>
-      <div class="faq" data-reveal>
-        <h2 class="h3" data-i18n="faq.title">Sering <em>ditanya</em></h2>
-        <div id="faq"></div>
-      </div>
+    </section>
+
+    <!-- ========== STORE ========== -->
+    <section class="blk" id="store">
+      <header class="blk-head" data-reveal>
+        <h2 class="h2" data-i18n="store.title"><em>Store</em></h2>
+        <p class="muted" data-i18n="store.sub"></p>
+      </header>
+      <div class="filters" id="store-filters" data-reveal role="group" aria-label="Store filter"></div>
+      <div class="products" id="products"></div>
+    </section>
+
+    <!-- ========== OTHER ========== -->
+    <section class="blk" id="other">
+      <header class="blk-head" data-reveal>
+        <h2 class="h2" data-i18n="other.title"><em>Other</em></h2>
+        <p class="muted" data-i18n="other.sub"></p>
+      </header>
+      <h3 class="sub-h" data-i18n="other.games" data-reveal>Game Roblox</h3>
+      <div class="games" id="games"></div>
+      <h3 class="sub-h" id="olinks-h" data-i18n="other.more" data-reveal>Link lain</h3>
+      <div class="olinks" id="olinks"></div>
     </section>
   </main>
 
-  <!-- contact / footer -->
-  <footer class="foot" id="contact">
-    <p class="eyebrow center" data-reveal><i class="live"></i><span data-i18n="contact.eyebrow"></span></p>
-    <a class="mega" id="mega" href="#contact" data-reveal data-magnetic data-i18n="contact.big"></a>
-    <p class="muted center" data-reveal data-i18n="contact.sub"></p>
-    <div class="ctas center" data-reveal>
-      <a class="btn" id="foot-wa" href="#contact" target="_blank" rel="noopener" data-magnetic data-i18n="contact.wa">WhatsApp</a>
-      <a class="btn btn-ghost" id="foot-mail" href="#contact" data-magnetic data-i18n="contact.mail">Email</a>
-    </div>
-    <div class="socials" id="socials"></div>
-    <div class="foot-row muted">
-      <span>© <span id="year"></span> <span data-site="name"></span></span>
-      <a href="#top" data-i18n="foot.top">Ke atas</a>
-    </div>
+  <footer class="foot">
+    <span>© <span id="year"></span> <span data-site="name"></span></span>
+    <a href="#top" data-i18n="foot.top">Ke atas</a>
   </footer>
 
   <!-- viewer -->
@@ -157,9 +167,7 @@
         </div>
       </div>
       <div class="sheet-body">
-        <div class="stage">
-          <div class="frame"><div id="yt"></div></div>
-        </div>
+        <div class="stage"><div class="frame"><div id="yt"></div></div></div>
         <aside class="detail">
           <span class="tag" id="m-cat"></span>
           <h2 id="m-title"></h2>
@@ -167,7 +175,8 @@
           <dl id="m-meta"></dl>
           <div class="tags" id="m-tools"></div>
           <div class="detail-cta">
-            <a class="btn" id="m-order" href="#contact" target="_blank" rel="noopener"><span data-i18n="modal.order"></span></a>
+            <a class="btn" id="m-order" href="#" target="_blank" rel="noopener"><span data-i18n="modal.order"></span></a>
+            <a class="btn btn-ghost" id="m-yt" href="#" target="_blank" rel="noopener"><span data-i18n="modal.yt"></span></a>
             <button class="btn btn-ghost" id="m-copy" data-i18n="modal.copy"></button>
           </div>
         </aside>
