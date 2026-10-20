@@ -68,8 +68,7 @@ window.LINKS = [
    ========================================================= */
 window.VIDEOS = [
   /* Tutorial script Mugiwara HUB (tampil di Other + Discover). Judul, tayang, tanggal, durasi diisi otomatis dari YouTube */
-  { yt: "https://www.youtube.com/watch?v=64MjgGJADjA", type: "other", category: "Tutorial", discover: 2,
-    desc: { id: "Panduan langkah demi langkah memakai Mugiwara HUB.", en: "Step-by-step guide to using Mugiwara HUB." } },
+  { yt: "https://www.youtube.com/watch?v=64MjgGJADjA", type: "other", category: "Tutorial", discover: 2 },
 
   /* [CONTOH] video di bawah ini cuma contoh pakai film open-source Blender. Hapus lalu ganti. */
   { yt: "eRsGyueVLvQ", type: "client", title: "Sintel — Brand Film", client: "Northwind", category: "Brand Film", views: 48200, uploaded: "2026-10-12", duration: "14:48", featured: true, preview: 60,
@@ -150,7 +149,6 @@ window.PRODUCTS = [
    steps    : daftar langkah cara pakai
    guide    : [{ q: "Judul", a: "Isi" }] untuk panel lipat (executor, troubleshooting, dll)
    note     : catatan / peringatan di bagian bawah
-   url      : link repo / halaman (tombol "Lihat di GitHub")
    discover : true atau angka urutan = ikut tampil di blok Discover
    ========================================================= */
 window.SCRIPTS = [
@@ -191,7 +189,7 @@ window.SCRIPTS = [
       id: "Pakai dengan risiko sendiri. Script pihak ketiga bisa melanggar Ketentuan Layanan Roblox dan berisiko membuat akun terkena tindakan.",
       en: "Use scripts at your own risk. Using third-party scripts may violate Roblox Terms of Service and can result in account action.",
     },
-    url: "https://github.com/honamichanhere/Mugiwara-HUB" },
+  },
 ];
 
 /* =========================================================

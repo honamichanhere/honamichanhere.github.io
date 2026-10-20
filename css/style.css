@@ -430,3 +430,11 @@ em{animation:none;filter:none}
   .dock-in{gap:.25rem}
   .lang button{padding:.3rem .5rem}
 }
+
+/* atribut hidden harus selalu menang atas display bawaan komponen (mis. .btn) */
+[hidden]{display:none!important}
+.sx-steps{padding-bottom:.9rem}
+#m-desc{white-space:pre-line;max-height:11rem;overflow:auto;font-size:.9rem;line-height:1.6;overscroll-behavior:contain;padding-right:.3rem}
+#m-desc a{color:var(--neon);text-decoration:underline;text-underline-offset:3px;word-break:break-all}
+#m-desc::-webkit-scrollbar{width:6px}
+#m-desc::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:6px}

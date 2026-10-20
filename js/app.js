@@ -4,6 +4,8 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const pad = n => String(n).padStart(2, "0");
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  /* teks -> HTML aman, URL dijadikan link */
+  const linkify = txt => esc(txt).replace(/(https?:\/\/[^\s<]+)/g, m => { const tail = (m.match(/[.,;:!?)\]]+$/) || [""])[0], u = tail ? m.slice(0, -tail.length) : m; return `<a href="${u}" target="_blank" rel="noopener noreferrer">${u}</a>${tail}`; });
   const fine = matchMedia("(hover:hover) and (pointer:fine)").matches;
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
   /* hanya izinkan skema aman untuk link yang berasal dari data (blokir javascript: dll) */
@@ -32,6 +34,7 @@
     const yt = ytId(v.yt); let id = v.id || yt; if (seen[id]) id += "-" + (++seen[id]); else seen[id] = 1;
     return { ...v, yt, id, type: v.type === "own" ? "own" : v.type === "other" ? "other" : "client", category: v.category || "Video", client: v.client || "", views: v.views ?? null };
   });
+  const descOf = v => L(v.desc) || v.descAuto || "";
   const sortAll = () => ALL.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (b.uploaded || "").localeCompare(a.uploaded || ""));
   sortAll();
   const EDIT = () => ALL.filter(v => v.type !== "other"), OTV = () => ALL.filter(v => v.type === "other");
@@ -134,7 +137,7 @@
   function discoverItems() {
     const out = [];
     SC.filter(s => s.discover).forEach(s => out.push({ kind: "script", r: rank(s), title: L(s.name), sub: L(s.header), href: itemHash(s), image: s.images[0], icon: "code", cta: t("spot.open") }));
-    ALL.filter(v => v.discover).forEach(v => out.push({ kind: "video", r: rank(v), title: L(v.title) || "…", sub: [v.category, v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).join(" • "), href: `#/v/${v.id}`, yt: v.yt, cta: t("spot.open") }));
+    ALL.filter(v => v.discover).forEach(v => out.push({ kind: "video", r: rank(v), title: L(v.title) || "…", sub: (descOf(v).split("\n").map(x => x.trim()).find(Boolean) || "").slice(0, 150) || [v.category, v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).join(" • "), href: `#/v/${v.id}`, yt: v.yt, cta: t("spot.open") }));
     PR.filter(p => p.discover).forEach(p => out.push({ kind: "product", r: rank(p), title: L(p.name), sub: L(p.header), href: itemHash(p), image: p.images[0], icon: "store", price: p.price, cta: t("store.see") }));
     window.GAMES.filter(g => g.discover && g.url).forEach(g => { const r = (g.placeId && ext.roblox[g.placeId]) || {}; out.push({ kind: "game", r: rank(g), title: L(g.name) || r.name || "Game", sub: L(g.desc), href: g.url, external: true, image: g.image || r.image, icon: "roblox", cta: t("game.play") }); });
     return out.sort((a, b) => a.r - b.r);
@@ -365,7 +368,7 @@
     $("#sx-feats").innerHTML = feats.map(f => `<div>${esc(L(f.t))}<small>${esc(L(f.s))}</small></div>`).join("");
     $("#sx-feats-l").hidden = $("#sx-feats").hidden = !feats.length;
     const stepsHtml = (p.steps || []).length ? `<ol class="sx-steps">${p.steps.map(s => `<li>${esc(L(s))}</li>`).join("")}</ol>` : "";
-    $("#sx-guide").innerHTML = (stepsHtml ? qaHtml(t("script.steps"), stepsHtml, true) : "") + (p.guide || []).map(g => qaHtml(L(g.q), `<p>${esc(L(g.a))}</p>`)).join("");
+    $("#sx-guide").innerHTML = (stepsHtml ? qaHtml(t("script.steps"), stepsHtml, false) : "") + (p.guide || []).map(g => qaHtml(L(g.q), `<p>${esc(L(g.a))}</p>`)).join("");
     $("#sx-note").textContent = L(p.note) || "";
   }
   bindAccordion($("#sx-guide"));
@@ -380,7 +383,6 @@
     $("#p-script").hidden = !script;
     const buy = $("#p-buy"); buy.hidden = script; buy.href = p.url || "#"; buy.setAttribute("aria-disabled", p.url ? "false" : "true");
     $("#sx-copy").hidden = !script || !p.loader;
-    const gh = $("#sx-gh"); gh.hidden = !script || !p.url; gh.href = p.url || "#";
     if (script) fillScript(p);
     $("#pprev").disabled = $("#pnext").disabled = list.length < 2;
   }
@@ -507,7 +509,7 @@
     const v = cur, ids = modal._ids || [], list = v.type === "other" ? OTV() : EDIT();
     $("#m-no").textContent = pad(list.indexOf(v) + 1); $("#m-total").textContent = pad(list.length);
     $("#m-cat").textContent = v.category; $("#m-title").textContent = L(v.title);
-    $("#m-desc").textContent = L(v.desc) || ""; $("#m-desc").hidden = !v.desc;
+    $("#m-desc").innerHTML = linkify(descOf(v)); $("#m-desc").hidden = !descOf(v);
     $("#m-meta").innerHTML = [[t("modal.client"), v.type === "client" ? v.client : ""], [t("modal.cat"), v.category], [t("modal.uploaded"), longDate(v.uploaded)], [t("modal.views"), v.views != null ? new Intl.NumberFormat(loc()).format(v.views) : ""], [t("modal.dur"), v.duration]]
       .filter(r => r[1]).map(([k, val]) => `<dt>${esc(k)}</dt><dd>${esc(val)}</dd>`).join("");
     $("#m-tools").innerHTML = (v.tools || []).map(x => `<span class="tag">${esc(x)}</span>`).join("");
@@ -564,6 +566,7 @@
       if (!v.uploaded && x.uploaded) v.uploaded = x.uploaded;
       if (!v.duration && x.duration) v.duration = x.duration;
       if (!v.title && x.title) v.title = x.title;
+      if (x.description) v.descAuto = x.description;
       changed = true;
     });
     if (st._roblox) { ext.roblox = st._roblox; changed = true; }

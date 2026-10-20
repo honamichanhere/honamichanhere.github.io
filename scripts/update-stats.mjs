@@ -30,7 +30,7 @@ else {
       const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${chunk.join(",")}&key=${key}`);
       if (!res.ok) throw new Error(`YouTube API ${res.status}: ${await res.text()}`);
       for (const it of (await res.json()).items || []) {
-        out[it.id] = { views: Number(it.statistics?.viewCount ?? 0), title: it.snippet?.title || "", uploaded: (it.snippet?.publishedAt || "").slice(0, 10), duration: dur(it.contentDetails?.duration) };
+        out[it.id] = { views: Number(it.statistics?.viewCount ?? 0), title: it.snippet?.title || "", uploaded: (it.snippet?.publishedAt || "").slice(0, 10), duration: dur(it.contentDetails?.duration), description: String(it.snippet?.description || "").replace(/\r/g, "").slice(0, 1500) };
       }
     }
     console.log(`YouTube: ${ids.length} video dicek.`);
