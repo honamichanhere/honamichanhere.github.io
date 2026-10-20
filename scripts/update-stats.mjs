@@ -1,6 +1,6 @@
 // Ambil data otomatis lalu simpan ke js/stats.json:
 //  - YouTube Data API : tayang, judul, tanggal upload, durasi (butuh env YT_API_KEY, kalau kosong dilewati)
-//  - Avora (halaman publik): jumlah terjual per produk (karena Avora belum punya API)
+//  - Avora (halaman publik): jumlah terjual, judul, harga, dan harga coret per produk (karena Avora belum punya API)
 //  - Roblox (publik)  : nama, jumlah pemain, total kunjungan, ikon, untuk game yang punya placeId
 import fs from "node:fs";
 import vm from "node:vm";
@@ -66,18 +66,32 @@ if (places.length) {
 /* ---------- Avora: jumlah terjual dari halaman produk publik (Avora belum punya API) ---------- */
 const avoraUrls = [...new Set((win.PRODUCTS || []).map(p => String(p.url || "").trim()).filter(u => /^https:\/\/avora\.id\/\S+$/.test(u)))];
 if (avoraUrls.length) {
-  const sold = { ...(out._sold || {}) };
+  const sold = { ...(out._sold || {}) }, meta = { ...(out._avora || {}) };
+  const decode = s => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+  const num = s => Number(String(s).replace(/\D/g, ""));
+  const rp = s => "Rp " + String(s).replace(/[.,]+$/, "");
   for (const u of avoraUrls) {
     try {
       const res = await fetch(u, { headers: { "user-agent": "HonamiLinkInBioStats/1.0 (+https://honamichanhere.github.io)", "accept-language": "id" }, signal: AbortSignal.timeout(20000) });
       if (!res.ok) throw new Error("HTTP " + res.status);
-      const mm = (await res.text()).match(/(\d[\d.,]*)\s*orang\s+sudah\s+beli/i);
-      if (!mm) { console.warn("Avora: angka terjual tidak ditemukan di " + u + " (struktur halaman berubah?). Nilai lama dipakai."); }
-      else sold[u] = Number(mm[1].replace(/[.,]/g, ""));
+      const html = await res.text(), info = { ...(meta[u] || {}) };
+      /* jumlah terjual */
+      const mm = html.match(/(\d[\d.,]*)\s*orang\s+sudah\s+beli/i);
+      if (mm) sold[u] = Number(mm[1].replace(/[.,]/g, "")); else console.warn("Avora: angka terjual tidak ditemukan di " + u + " (struktur halaman berubah?). Nilai lama dipakai.");
+      /* judul produk */
+      const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/), title = h1 ? decode(h1[1].replace(/<[^>]*>/g, "")).trim() : "";
+      if (title) info.title = title; else console.warn("Avora: judul tidak ditemukan di " + u + ". Nilai lama dipakai.");
+      /* harga sekarang (tombol Beli) dan harga coret (kalau ada diskon) */
+      const now = html.match(/Beli\s*\u00b7\s*Rp\s?([\d.,]+)/), old = html.match(/<p[^>]*line-through[^>]*>\s*Rp\s?([\d.,]+)\s*<\/p>/);
+      if (now) { info.price = rp(now[1]); info.oldPrice = old && num(old[1]) > num(now[1]) ? rp(old[1]) : ""; }
+      else console.warn("Avora: harga tidak ditemukan di " + u + ". Nilai lama dipakai.");
+      meta[u] = info;
     } catch (e) { console.warn("Avora: gagal membaca " + u + " — " + String(e)); }
     await new Promise(r => setTimeout(r, 1500));
   }
-  if (Object.keys(sold).length) { out._sold = sold; console.log("Avora: " + avoraUrls.length + " produk dicek."); }
+  if (Object.keys(sold).length) out._sold = sold;
+  if (Object.keys(meta).length) out._avora = meta;
+  console.log("Avora: " + avoraUrls.length + " produk dicek.");
 }
 
 const next = JSON.stringify(out, null, 2) + "\n";

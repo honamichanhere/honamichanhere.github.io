@@ -21,7 +21,7 @@
   let lang = store.get("lang") || (/^id\b/i.test(navigator.language || "") ? "id" : "en");
   if (!D[lang]) lang = "id";
   const state = { type: "client", cat: "all", tag: "all", order: "" };
-  let cur = null, curP = null, player = null, apiState = 0, statsDone = false, ext = { roblox: {}, sold: {} };
+  let cur = null, curP = null, player = null, apiState = 0, statsDone = false, ext = { roblox: {}, sold: {}, avora: {} };
 
   const t = k => D[lang][k] ?? k;
   const L = x => (x && typeof x === "object" ? (x[lang] ?? x.id ?? "") : x ?? "");
@@ -45,6 +45,10 @@
   /* jumlah terjual: otomatis (stats.json, dibaca dari halaman Avora) lalu cadangan manual */
   const soldOf = p => { const n = ext.sold[p.url] ?? p.sold; return n == null ? null : Number(n); };
   const soldTxt = p => { const n = soldOf(p); return n == null ? "" : `${n >= 10000 ? compact(n) : new Intl.NumberFormat(loc()).format(n)} ${t("sold")}`; };
+  /* judul & harga produk: dicerminkan dari halaman Avora (stats.json). Nilai di data.js jadi cadangan; mirror: false = matikan */
+  const avOf = p => (p.mirror !== false && p.url && ext.avora[p.url]) || null;
+  const nameOf = p => (avOf(p) && avOf(p).title) || L(p.name);
+  const priceOf = p => ({ now: (avOf(p) && avOf(p).price) || p.price || "", old: (avOf(p) && avOf(p).oldPrice) || p.oldPrice || "" });
   const itemHash = p => `#/${p.kind[0]}/${p.id}`;
   const listOfItem = p => (p.kind === "script" ? SC : PR);
 
@@ -141,7 +145,7 @@
     const out = [];
     SC.filter(s => s.discover).forEach(s => out.push({ kind: "script", r: rank(s), title: L(s.name), sub: L(s.header), href: itemHash(s), image: s.images[0], icon: "code", cta: t("spot.open") }));
     ALL.filter(v => v.discover).forEach(v => out.push({ kind: "video", r: rank(v), title: L(v.title) || "…", sub: (descOf(v).split("\n").map(x => x.trim()).find(Boolean) || "").slice(0, 150) || [v.category, v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).join(" • "), href: `#/v/${v.id}`, yt: v.yt, cta: t("spot.open") }));
-    PR.filter(p => p.discover).forEach(p => out.push({ kind: "product", r: rank(p), title: L(p.name), sub: L(p.header), href: itemHash(p), image: p.images[0], icon: "store", price: [p.price, soldTxt(p)].filter(Boolean).join(" • "), cta: t("store.see") }));
+    PR.filter(p => p.discover).forEach(p => out.push({ kind: "product", r: rank(p), title: nameOf(p), sub: L(p.header), href: itemHash(p), image: p.images[0], icon: "store", price: [priceOf(p).now, soldTxt(p)].filter(Boolean).join(" • "), cta: t("store.see") }));
     window.GAMES.filter(g => g.discover && g.url).forEach(g => { const r = (g.placeId && ext.roblox[g.placeId]) || {}; out.push({ kind: "game", r: rank(g), title: L(g.name) || r.name || "Game", sub: L(g.desc), href: g.url, external: true, image: g.image || r.image, icon: "roblox", cta: t("game.play") }); });
     return out.sort((a, b) => a.r - b.r);
   }
@@ -317,7 +321,7 @@
 
   /* ---------- STORE ---------- */
   const pThumb = p => p.images[0]
-    ? `<img src="${esc(p.images[0])}" alt="${esc(L(p.name))}" loading="lazy">`
+    ? `<img src="${esc(p.images[0])}" alt="${esc(nameOf(p))}" loading="lazy">`
     : ico(p.kind === "script" ? "code" : "store");
   let productEls = [];
   function renderStore() {
@@ -330,8 +334,8 @@
       const a = document.createElement("a");
       a.className = "product glass"; a.href = itemHash(p); a.dataset.tag = p.tag || "";
       a.innerHTML = `<div class="p-img">${pThumb(p)}${p.tag ? `<span class="badge">${esc(p.tag)}</span>` : ""}</div>
-        <div class="p-body"><h3>${esc(L(p.name))}</h3><p>${esc(L(p.header))}</p>${soldTxt(p) ? `<span class="p-sold">${ico("store")}${esc(soldTxt(p))}</span>` : ""}
-          <div class="p-foot"><span class="p-price">${esc(p.price || "")}</span><span class="btn btn-sm">${esc(t("store.see"))}${ico("arrow")}</span></div></div>`;
+        <div class="p-body"><h3>${esc(nameOf(p))}</h3><p>${esc(L(p.header))}</p>${soldTxt(p) ? `<span class="p-sold">${ico("store")}${esc(soldTxt(p))}</span>` : ""}
+          <div class="p-foot"><div class="p-pricebox"><span class="p-price">${esc(priceOf(p).now)}</span>${priceOf(p).old && priceOf(p).old !== priceOf(p).now ? `<s class="p-old">${esc(priceOf(p).old)}</s>` : ""}</div><span class="btn btn-sm">${esc(t("store.see"))}${ico("arrow")}</span></div></div>`;
       a.hidden = state.tag !== "all" && p.tag !== state.tag;
       main.append(a); return a;
     });
@@ -349,7 +353,7 @@
   const slides = $("#slides"), dots = $("#dots");
   let slideIdx = 0;
   function buildSlider(p) {
-    slides.innerHTML = (p.images.length ? p.images : [""]).map(src => `<div class="slide">${src ? `<img src="${esc(src)}" alt="${esc(L(p.name))}" draggable="false">` : ico(p.kind === "script" ? "code" : "store")}</div>`).join("");
+    slides.innerHTML = (p.images.length ? p.images : [""]).map(src => `<div class="slide">${src ? `<img src="${esc(src)}" alt="${esc(nameOf(p))}" draggable="false">` : ico(p.kind === "script" ? "code" : "store")}</div>`).join("");
     const n = slides.children.length;
     dots.innerHTML = n > 1 ? Array.from({ length: n }, (_, i) => `<button data-i="${i}" aria-label="Image ${i + 1}"></button>`).join("") : "";
     $("#s-prev").hidden = $("#s-next").hidden = n < 2;
@@ -380,8 +384,8 @@
     pmodal.classList.toggle("is-script", script);
     $("#p-no").textContent = pad(list.indexOf(p) + 1); $("#p-total").textContent = pad(list.length);
     $("#p-tag").textContent = [p.tag, script && p.status ? L(p.status) : ""].filter(Boolean).join(" • "); $("#p-tag").hidden = !p.tag;
-    $("#p-title").textContent = L(p.name); $("#p-header").textContent = L(p.header); $("#p-header").hidden = !p.header;
-    $("#p-price").textContent = p.price || ""; $("#p-price").hidden = script || !p.price;
+    $("#p-title").textContent = nameOf(p); $("#p-header").textContent = L(p.header); $("#p-header").hidden = !p.header;
+    { const pr = priceOf(p), disc = pr.old && pr.old !== pr.now; $("#p-price").textContent = pr.now; $("#p-old").textContent = disc ? pr.old : ""; $("#p-old").hidden = !disc; $("#p-pricerow").hidden = script || !pr.now; }
     $("#p-desc").textContent = L(p.desc);
     { const st = script ? "" : soldTxt(p); $("#p-sold").hidden = !st; $("#p-sold").innerHTML = st ? `${ico("store")}${esc(st)}` : ""; }
     $("#p-script").hidden = !script;
@@ -575,6 +579,7 @@
     });
     if (st._roblox) { ext.roblox = st._roblox; changed = true; }
     if (st._sold) { ext.sold = st._sold; changed = true; }
+    if (st._avora) { ext.avora = st._avora; changed = true; }
     if (!changed) return;
     sortAll(); renderBio(); if (statsDone) { statsDone = false; countUp(); }
     renderDiscover(); renderStore(); renderCards(); renderOther(); if (cur) fillModal(); if (curP) fillP();

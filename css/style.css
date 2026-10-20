@@ -454,3 +454,9 @@ em{animation:none;filter:none}
 
 /* tombol utama (WhatsApp) melebar penuh di atas, tombol sosial lain tersusun rapi di bawahnya */
 .links .link.primary{grid-column:1/-1}
+
+/* harga: harga sekarang + harga coret (diskon) */
+.p-pricebox{display:flex;align-items:baseline;gap:.2rem .6rem;flex-wrap:wrap}
+.p-old{color:var(--dim);font:500 .85rem var(--sans);text-decoration:line-through;text-decoration-thickness:1.5px}
+.p-pricerow{display:flex;align-items:baseline;gap:.3rem .8rem;flex-wrap:wrap}
+.p-pricerow .p-old{font-size:1rem}

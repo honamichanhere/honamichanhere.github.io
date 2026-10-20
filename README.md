@@ -74,6 +74,8 @@ Taruh gambar produk di folder `assets/store/` (disarankan WebP, di bawah 200 KB 
 ## Update otomatis (YouTube + Roblox + jumlah terjual Avora)
 GitHub Action `.github/workflows/update-stats.yml` jalan **tiap jam** (GitHub bisa menunda beberapa menit) dan setiap `js/data.js` berubah. Ia mengisi `js/stats.json` (dibaca website otomatis). Setelah file berubah, situs ter-deploy ulang (sekitar 1–3 menit), jadi angka di situs bisa tertinggal sampai ±1 jam 3 menit.
 
+**Judul, harga, dan harga coret (Avora):** untuk produk dengan link `https://avora.id/...`, judul dan harga (termasuk harga coret kalau ada diskon) ikut dicerminkan dari halaman Avora tiap jam. `name` dan `price` di `data.js` jadi cadangan; tambah `mirror: false` di produk kalau mau memakai nilai di `data.js` saja. Deskripsi dan gambar produk tetap manual.
+
 **Jumlah terjual (Avora):** Avora belum punya API, jadi script membaca teks "N orang sudah beli" dari halaman produk publik yang ada di `url` produk (hanya link `https://avora.id/...`, 1 permintaan per produk per jam). Kalau Avora mengubah tampilannya dan teks itu tidak ketemu, angka terakhir tetap dipakai (dan `sold` manual di data jadi cadangan); situs tidak rusak. Kalau Avora nanti merilis API, pembacaan ini bisa diganti.
 
 **Setup YouTube (sekali saja):**

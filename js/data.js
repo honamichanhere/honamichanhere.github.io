@@ -111,6 +111,8 @@ window.VIDEOS = [
    desc    : deskripsi lengkap, boleh beberapa baris (pisahkan dengan \n)
    url     : link produk di Avora (tombol Buy). Jumlah terjual dibaca OTOMATIS dari halaman ini tiap jam
    sold    : (opsional) jumlah terjual manual, dipakai sebagai cadangan kalau pembacaan otomatis gagal
+   Untuk produk dengan link Avora, JUDUL, HARGA, HARGA CORET (diskon), dan JUMLAH TERJUAL otomatis mengikuti halaman Avora (tiap jam).
+   name / price / sold di sini cuma cadangan. Tambah  mirror: false  di produk kalau mau memakai nilai di sini saja.
    tag     : label kategori (otomatis jadi filter)
    discover: (opsional) true atau angka urutan = ikut tampil di blok Discover
    ========================================================= */
