@@ -443,3 +443,11 @@ em{animation:none;filter:none}
 .p-sold{display:inline-flex;align-items:center;gap:.4rem;align-self:flex-start;font-weight:700;font-size:.78rem;color:var(--neon);padding:.2rem .65rem;border-radius:99px;background:rgba(255,233,74,.1);border:1px solid rgba(255,233,74,.3)}
 .p-sold .ico{width:.95em;height:.95em}
 .p-sold[hidden]{display:none}
+
+/* kartu produk: harga di atas, tombol See Item besar dan rata tengah di bawahnya (tidak pecah di kartu sempit) */
+.p-foot{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:.75rem;margin-top:.5rem}
+.p-foot>span:empty{display:none}
+.p-price{font-size:1.35rem;line-height:1.1;white-space:nowrap}
+.p-foot .btn{width:100%;justify-content:center;padding:.8rem 1.2rem;font-size:.98rem;white-space:nowrap}
+.spot-foot{flex-wrap:wrap}
+.spot-foot .btn{white-space:nowrap}
