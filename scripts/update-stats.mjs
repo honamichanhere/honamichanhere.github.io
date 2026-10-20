@@ -72,7 +72,7 @@ if (places.length) {
       const tById = Object.fromEntries((th.data || []).map(x => [x.targetId, x.imageUrl]));
       for (const [p, u] of Object.entries(uni)) {
         const x = gById[u]; if (!x) continue;
-        rb[p] = { name: x.name, playing: x.playing ?? 0, visits: x.visits ?? 0, image: tById[u] || "" };
+        rb[p] = { name: x.name, description: String(x.description || "").replace(/\r/g, "").trim().slice(0, 400), playing: x.playing ?? 0, visits: x.visits ?? 0, image: tById[u] || "" };
       }
     }
     if (Object.keys(rb).length) { out._roblox = rb; console.log(`Roblox: ${Object.keys(rb).length} game dicek.`); }

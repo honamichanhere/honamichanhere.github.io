@@ -487,3 +487,5 @@ em{animation:none;filter:none}
 /* pemutar: frame mengikuti rasio asli video */
 .frame{aspect-ratio:var(--r,1.7778);width:min(100%,calc((100svh - 9rem) * var(--r,1.7778)))}
 @media (max-width:900px){.frame{width:min(100%,calc((100svh - 8rem) * var(--r,1.7778)))}}
+
+.g-body p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}

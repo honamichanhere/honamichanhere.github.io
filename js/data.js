@@ -221,17 +221,14 @@ window.SCRIPTS = [
 /* =========================================================
    GAME ROBLOX (blok Other)
    url      : link game
-   placeId  : (opsional) angka di link roblox.com/games/ANGKA/...  → gambar, jumlah pemain & visit
-              diambil OTOMATIS oleh GitHub Action
+   placeId  : angka di link roblox.com/games/ANGKA/...  → NAMA, deskripsi, gambar, jumlah pemain & visit
+              diambil OTOMATIS dari Roblox oleh GitHub Action (tiap jam)
+   name/desc: (opsional) isi kalau mau memakai teks sendiri, mis. name: "Lost Island", desc: { id: "...", en: "..." }
    image    : (opsional) gambar manual kalau tidak pakai placeId
    discover : (opsional) true atau angka urutan = ikut tampil di blok Discover
    ========================================================= */
 window.GAMES = [
-  /* [CONTOH] game orang lain cuma buat contoh tampilan live stats. Ganti dengan game lu. */
-  { name: "Adopt Me! (contoh)", placeId: 920587237, url: "https://www.roblox.com/games/920587237",
-    desc: { id: "Contoh kartu game dengan statistik otomatis.", en: "Sample game card with automatic stats." } },
-  { name: { id: "Game Kamu #2", en: "Your Game #2" }, url: "", image: "",
-    desc: { id: "Deskripsi singkat game. Isi url supaya tombol Main aktif.", en: "Short game description. Set url to enable the Play button." } },
+  { placeId: 105281863496499, url: "https://www.roblox.com/games/105281863496499/Lost-Island" },
 ];
 
 /* Link lain di blok Other (komunitas, donasi, dll). icon: sama seperti LINKS. url kosong = disembunyikan */

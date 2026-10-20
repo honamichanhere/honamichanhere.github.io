@@ -56,7 +56,7 @@ Tambahkan `discover: true` (atau angka urutan, 1 = paling depan) ke item mana pu
 - `SITE` — nama, `logo` (foto profil), `banner`, `role` (judul di bawah nama), `badges`, `tools`, `about`, `stats`.
 - `LINKS` — tombol di blok Biodata. `icon`: `wa ig tt yt discord mail roblox store link`. `url` kosong = disembunyikan. `copy: true` = klik menyalin alamat email (dipakai untuk Email).
 - `OTHER_LINKS` — link tambahan di blok Other.
-- `GAMES` — game Roblox. Isi `placeId` (angka di link `roblox.com/games/ANGKA/...`) supaya gambar, jumlah pemain, dan visit otomatis. Atau isi `image` manual.
+- `GAMES` — game Roblox. Cukup isi `placeId` (angka di link `roblox.com/games/ANGKA/...`) dan `url`: nama, deskripsi, gambar, jumlah pemain, dan kunjungan diambil otomatis dari Roblox tiap jam. Isi `name`, `desc`, atau `image` hanya kalau mau memakai versi sendiri.
 
 ## Store
 `PRODUCTS` di `js/data.js`. Kartu menampilkan thumbnail, title, header, harga, dan tombol **See Item**. Klik kartu membuka popup detail dengan thumbnail yang bisa digeser, deskripsi lengkap, harga, dan tombol **Buy**.

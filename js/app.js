@@ -167,7 +167,7 @@
     SC.filter(s => s.discover).forEach(s => out.push({ kind: "script", r: rank(s), title: L(s.name), sub: L(s.header), href: itemHash(s), image: s.images[0], icon: "code", cta: t("spot.open") }));
     ALL.filter(v => v.discover).forEach(v => out.push({ kind: "video", r: rank(v), title: L(v.title) || "…", sub: (descOf(v).split("\n").map(x => x.trim()).find(Boolean) || "").slice(0, 150) || [v.category, v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).join(" • "), href: `#/v/${v.id}`, yt: v.yt, vid: v.id, cta: t("spot.open") }));
     PR.filter(p => p.discover).forEach(p => out.push({ kind: "product", r: rank(p), title: nameOf(p), sub: L(p.header), href: itemHash(p), image: p.images[0], icon: "store", price: [priceOf(p).now, soldTxt(p)].filter(Boolean).join(" • "), cta: t("store.see") }));
-    window.GAMES.filter(g => g.discover && g.url).forEach(g => { const r = (g.placeId && ext.roblox[g.placeId]) || {}; out.push({ kind: "game", r: rank(g), title: L(g.name) || r.name || "Game", sub: L(g.desc), href: g.url, external: true, image: g.image || r.image, icon: "roblox", cta: t("game.play") }); });
+    window.GAMES.filter(g => g.discover && g.url).forEach(g => { const r = (g.placeId && ext.roblox[g.placeId]) || {}; out.push({ kind: "game", r: rank(g), title: L(g.name) || r.name || "Game", sub: L(g.desc) || r.description || "", href: g.url, external: true, image: g.image || r.image, icon: "roblox", cta: t("game.play") }); });
     return out.sort((a, b) => a.r - b.r);
   }
   function renderDiscover() {
@@ -457,7 +457,7 @@
       const r = (g.placeId && ext.roblox[g.placeId]) || {}, name = L(g.name) || r.name || "Game", image = g.image || r.image;
       return `<article class="game glass">
         <div class="g-img">${image ? `<img src="${esc(image)}" alt="${esc(name)}" loading="lazy" referrerpolicy="no-referrer">` : ico("roblox")}</div>
-        <div class="g-body"><h3>${esc(name)}</h3><p>${esc(L(g.desc))}</p>
+        <div class="g-body"><h3>${esc(name)}</h3><p>${esc(L(g.desc) || r.description || "")}</p>
           ${r.playing != null || r.visits != null ? `<div class="g-stats">${r.playing != null ? `<span><b>${compact(r.playing)}</b> ${esc(t("game.playing"))}</span>` : ""}${r.visits != null ? `<span><b>${compact(r.visits)}</b> ${esc(t("game.visits"))}</span>` : ""}</div>` : ""}
           ${g.url ? `<a class="btn btn-sm" href="${esc(g.url)}" target="_blank" rel="noopener noreferrer">${esc(t("game.play"))}${ico("arrow")}</a>` : `<span class="btn btn-sm btn-ghost" aria-disabled="true">${esc(t("game.soon"))}</span>`}</div>
       </article>`;
