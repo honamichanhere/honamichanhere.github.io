@@ -372,8 +372,15 @@
     const games = (p.games || []), feats = (p.features || []);
     $("#sx-games").innerHTML = games.map(g => `<span class="tag${g.soon ? " soon" : ""}">${esc(L(g.label))}</span>`).join("");
     $("#sx-games-l").hidden = $("#sx-games").hidden = !games.length;
-    $("#sx-feats").innerHTML = feats.map(f => `<div>${esc(L(f.t))}<small>${esc(L(f.s))}</small></div>`).join("");
+    $("#sx-feats").innerHTML = feats.map(f => `<div${f.wide ? ' class="wide"' : ""}>${esc(L(f.t))}<small>${esc(L(f.s))}</small></div>`).join("");
     $("#sx-feats-l").hidden = $("#sx-feats").hidden = !feats.length;
+    /* daftar harga langganan + cara order */
+    const pr = p.pricing, plans = (pr && pr.plans) || [], on = plans.length > 0;
+    $("#sx-price-l").hidden = $("#sx-prices").hidden = !on; $("#sx-pnote").hidden = !(on && pr.note);
+    $("#sx-pnote").textContent = on ? L(pr.note) : "";
+    $("#sx-prices").innerHTML = plans.map(x => `<div class="sx-price${x.best ? " best" : ""}">${x.best ? `<i class="tag-best">${esc(t("script.best"))}</i>` : ""}<b>${esc(L(x.label))}</b><span>${esc(x.price)}</span></div>`).join("");
+    const ord = on && pr.order, ordUrl = ord ? safeUrl(ord.url) : "";
+    $("#sx-order").hidden = !ordUrl; if (ordUrl) { $("#sx-order").href = ordUrl; $("#sx-order-t").textContent = [L(ord.text), ord.label].filter(Boolean).join(" "); }
     const stepsHtml = (p.steps || []).length ? `<ol class="sx-steps">${p.steps.map(s => `<li>${esc(L(s))}</li>`).join("")}</ol>` : "";
     $("#sx-guide").innerHTML = (stepsHtml ? qaHtml(t("script.steps"), stepsHtml, false) : "") + (p.guide || []).map(g => qaHtml(L(g.q), `<p>${esc(L(g.a))}</p>`)).join("");
     $("#sx-note").textContent = L(p.note) || "";

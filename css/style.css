@@ -460,3 +460,21 @@ em{animation:none;filter:none}
 .p-old{color:var(--dim);font:500 .85rem var(--sans);text-decoration:line-through;text-decoration-thickness:1.5px}
 .p-pricerow{display:flex;align-items:baseline;gap:.3rem .8rem;flex-wrap:wrap}
 .p-pricerow .p-old{font-size:1rem}
+
+/* kartu fitur selebar penuh + daftar harga langganan di detail script */
+.sx-feats div.wide{grid-column:1/-1}
+.sx-pnote{font-size:.88rem;line-height:1.55}
+.sx-prices{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-top:.5rem}
+.sx-price{position:relative;text-align:center;padding:.95rem .4rem .8rem;border-radius:12px;border:1px solid var(--glass-line);background:linear-gradient(160deg,rgba(255,199,44,.12),rgba(255,255,255,.03))}
+.sx-price b{display:block;font-size:.76rem;color:var(--muted);letter-spacing:.04em}
+.sx-price span{display:block;font:800 .92rem var(--display);margin-top:.3rem;color:#fdba74;white-space:nowrap}
+.sx-price.best{border-color:rgba(255,199,44,.7);background:linear-gradient(160deg,rgba(255,199,44,.28),rgba(255,45,61,.2));box-shadow:0 0 22px rgba(255,160,30,.25)}
+.sx-price.best b{color:#fef3c7}.sx-price.best span{color:var(--neon)}
+.sx-price .tag-best{position:absolute;top:-.6rem;left:50%;transform:translateX(-50%);background:var(--grad);background-origin:border-box;color:#0a0a0a;font:800 .58rem var(--sans);font-style:normal;letter-spacing:.08em;padding:.12rem .55rem;border-radius:99px;white-space:nowrap}
+.sx-order{margin-top:.7rem;justify-content:center;text-align:center;white-space:normal;font-size:.9rem}
+@media (max-width:420px){
+  .sx-prices{grid-template-columns:1fr}
+  .sx-price{display:flex;justify-content:space-between;align-items:center;text-align:left;padding:.75rem .9rem}
+  .sx-price span{margin-top:0}
+  .sx-price .tag-best{top:-.55rem;left:auto;right:.8rem;transform:none}
+}

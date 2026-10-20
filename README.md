@@ -43,7 +43,7 @@ Preview hover hanya jalan di desktop. Di HP, ketuk kartu langsung membuka pemuta
 Tambahkan `discover: true` (atau angka urutan, 1 = paling depan) ke item mana pun di `js/data.js`: video di `VIDEOS`, produk di `PRODUCTS`, script di `SCRIPTS`, atau game di `GAMES`. Item itu tetap tampil di tempat aslinya, dan **juga** muncul di blok Discover dengan label Spotlight. Kalau tidak ada item bertanda, blok Discover dan menunya otomatis hilang.
 
 ## Script & Tools (blok Other)
-`SCRIPTS` di `js/data.js`. Kartu di Other dan Discover membuka popup detail: gambar yang bisa digeser, deskripsi, loader dengan tombol **Salin script**, game yang didukung, fitur, panduan (bisa dilipat), dan catatan. Kolom: `name`, `header`, `desc`, `status`, `images`, `loader`, `games`, `features`, `steps`, `guide`, `note`, `discover`. Taruh gambar di `assets/other/`.
+`SCRIPTS` di `js/data.js`. Kartu di Other dan Discover membuka popup detail: gambar yang bisa digeser, deskripsi, loader dengan tombol **Salin script**, game yang didukung, fitur, panduan (bisa dilipat), dan catatan. Kolom: `name`, `header`, `desc`, `status`, `images`, `loader`, `games`, `features`, `pricing` (daftar harga langganan + tombol order), `steps`, `guide`, `note`, `discover`. Taruh gambar di `assets/other/`.
 
 **Deskripsi video otomatis:** kalau video tidak punya `desc`, deskripsinya diambil otomatis dari YouTube (GitHub Action ikut memperbaruinya, link di dalamnya jadi bisa diklik). Isi `desc` kalau mau memakai teks sendiri.
 

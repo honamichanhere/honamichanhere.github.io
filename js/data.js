@@ -158,7 +158,8 @@ window.PRODUCTS = [
    images   : daftar gambar (yang pertama jadi thumbnail)
    loader   : script yang disalin pengunjung
    games    : [{ label: "Evade" }, { label: { id: "...", en: "..." }, soon: true }]  (soon = abu-abu)
-   features : [{ t: "Judul", s: "Keterangan" }]
+   features : [{ t: "Judul", s: "Keterangan", wide: true }]  (wide: true = kartu selebar penuh)
+   pricing  : { note, plans: [{ label, price, best: true }], order: { text, label, url } }  daftar harga langganan + cara order (opsional)
    steps    : daftar langkah cara pakai
    guide    : [{ q: "Judul", a: "Isi" }] untuk panel lipat (executor, troubleshooting, dll)
    note     : catatan / peringatan di bagian bawah
@@ -180,11 +181,21 @@ window.SCRIPTS = [
       { label: { id: "Game lain segera hadir", en: "More coming soon" }, soon: true },
     ],
     features: [
-      { t: "Global Tab", s: { id: "Jalan di semua game", en: "Works in every game" } },
-      { t: "Game Modules", s: { id: "Fitur khusus tiap game", en: "Per-game features" } },
-      { t: "Clean UI", s: { id: "Simpel dan responsif", en: "Simple & responsive" } },
-      { t: "Key System", s: { id: "Akses premium", en: "Premium access" } },
+      { t: "Shaders", s: { id: "Grafis lebih bagus di game apa pun", en: "Better graphics for any game" } },
+      { t: "Visual & Avatar", s: "Visual Korless, Visual Accessories, Avatar Changer" },
+      { t: "Camera", s: "FreeCam, FOV, Zoom, Stabilizer" },
+      { t: "Per-Game Modules", s: { id: "Fitur khusus untuk tiap game", en: "Dedicated features for each game" } },
+      { t: "Movement", s: "Speed Hack, Fly, No Clip, Animation Speed", wide: true },
     ],
+    pricing: {
+      note: { id: "Mugiwara HUB gratis dipakai dengan sistem key. Mau fitur lengkap? Berlangganan Premium.", en: "Mugiwara HUB is free to use with a key system. Want the full feature set? Subscribe to Premium." },
+      plans: [
+        { label: { id: "7 Hari", en: "7 Days" }, price: "Rp 10.000" },
+        { label: { id: "30 Hari", en: "30 Days" }, price: "Rp 30.000" },
+        { label: "Lifetime", price: "Rp 100.000", best: true },
+      ],
+      order: { text: { id: "Untuk order, DM di TikTok", en: "To order, DM me on TikTok" }, label: "@honamichanhere", url: "https://www.tiktok.com/@honamichanhere" },
+    },
     steps: [
       { id: "Buka executor kamu (Xeno, Delta, atau executor lain yang didukung).", en: "Open your executor (Xeno, Delta, or any supported executor)." },
       { id: "Salin loader script di atas.", en: "Copy the loader script above." },
