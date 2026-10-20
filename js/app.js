@@ -122,7 +122,43 @@
   new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { countUp(); o.disconnect(); } }, { threshold: .3 }).observe($("#stats"));
 
   /* ---------- EDIT ---------- */
-  const grid = $("#grid"); let cards = [];
+  const grid = $("#grid"), gridMore = $("#grid-more"); let cards = [];
+  const LIMIT = Math.max(1, +S.showLimit || 10);
+  const moreOpen = { videos: false, store: false };
+
+  /* "See more": tampilkan LIMIT item pertama, sisanya masuk wadah yang bisa dibuka-tutup */
+  function setMore(key, wrap, btn, open, animate = true) {
+    moreOpen[key] = open;
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) {
+      wrap.classList.add("open");
+      const done = () => wrap.classList.add("settled");
+      animate && !calm ? setTimeout(done, 650) : done();
+    } else {
+      wrap.classList.remove("settled"); wrap.classList.remove("open");
+    }
+    labelMore(key);
+  }
+  const moreRefs = {
+    videos: () => ({ wrap: $("#more"), btn: $("#more-btn"), main: grid, extra: gridMore }),
+    store: () => ({ wrap: $("#smore"), btn: $("#smore-btn"), main: $("#products"), extra: $("#products-more") }),
+  };
+  function labelMore(key) {
+    const { btn } = moreRefs[key](), n = +btn.dataset.n || 0;
+    $("span", btn).textContent = moreOpen[key] ? t("more.hide") : t("more.show").replace("{n}", n);
+    btn.classList.toggle("is-open", moreOpen[key]);
+  }
+  function distribute(key, items) {
+    const { wrap, btn, main, extra } = moreRefs[key](), vis = items.filter(el => !el.hidden);
+    vis.forEach((el, i) => (i < LIMIT ? main : extra).append(el));
+    items.filter(el => el.hidden).forEach(el => main.append(el));
+    const n = Math.max(0, vis.length - LIMIT);
+    btn.dataset.n = n; btn.parentElement.hidden = n === 0;
+    if (n === 0 && moreOpen[key]) setMore(key, wrap, btn, false, false);
+    labelMore(key);
+  }
+  $("#more-btn").addEventListener("click", () => { const r = moreRefs.videos(); stopPreview(); setMore("videos", r.wrap, r.btn, !moreOpen.videos); });
+  $("#smore-btn").addEventListener("click", () => { const r = moreRefs.store(); setMore("store", r.wrap, r.btn, !moreOpen.store); });
   const inType = () => ALL.filter(v => v.type === state.type);
   function renderSeg() {
     $("#n-client").textContent = ALL.filter(v => v.type === "client").length;
@@ -140,7 +176,7 @@
     $("#filters").innerHTML = cats.length > 1 ? [["all", t("edit.all")], ...cats.map(c => [c, c])].map(([v, l]) => `<button class="chip${state.cat === v ? " is-on" : ""}" data-v="${esc(v)}">${esc(l)}</button>`).join("") : "";
   }
   function renderCards() {
-    stopPreview(); grid.innerHTML = "";
+    stopPreview(); grid.innerHTML = ""; gridMore.innerHTML = "";
     cards = ALL.map(v => {
       const a = document.createElement("a");
       a.className = "card glass"; a.href = `#/v/${v.id}`; a.dataset.id = v.id;
@@ -149,17 +185,19 @@
       $(".thumb", a).prepend(img(v.yt, L(v.title)));
       grid.append(a); return a;
     });
-    applyFilter(true); observeReveal(cards.filter(c => !c.hidden), 6);
+    applyFilter(true); observeReveal(cards.filter(c => !c.hidden && c.parentElement === grid), 6);
   }
   function applyFilter(instant) {
-    const first = new Map(cards.filter(c => !c.hidden).map(c => [c, c.getBoundingClientRect()]));
+    const first = new Map(cards.filter(c => !c.hidden && c.parentElement === grid).map(c => [c, c.getBoundingClientRect()]));
     let n = 0;
     cards.forEach(c => { const v = byId[c.dataset.id]; c.hidden = v.type !== state.type || (state.cat !== "all" && v.category !== state.cat); if (!c.hidden) n++; });
+    distribute("videos", cards);
+    cards.forEach(c => { if (c.parentElement === gridMore) c.classList.remove("reveal", "in"); });
     $("#empty").hidden = n > 0;
     $("#order").hidden = state.type !== "client";
     if (instant === true || calm) return;
     cards.forEach(c => {
-      if (c.hidden) return; c.classList.remove("reveal", "in");
+      if (c.hidden || c.parentElement !== grid) return; c.classList.remove("reveal", "in");
       const l = c.getBoundingClientRect(), p = first.get(c);
       if (p) { const dx = p.left - l.left, dy = p.top - l.top; if (dx || dy) c.animate([{ transform: `translate(${dx}px,${dy}px)` }, { transform: "none" }], { duration: 560, easing: "cubic-bezier(.2,.8,.2,1)" }); }
       else c.animate([{ opacity: 0, transform: "translateY(18px) scale(.96)" }, { opacity: 1, transform: "none" }], { duration: 480, easing: "cubic-bezier(.2,.8,.2,1)" });
@@ -167,7 +205,7 @@
   }
   $("#seg").addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b || b.dataset.type === state.type) return;
-    stopPreview(); state.type = b.dataset.type; state.cat = "all"; renderSeg(); renderFilters(); applyFilter();
+    stopPreview(); state.type = b.dataset.type; state.cat = "all"; { const r = moreRefs.videos(); setMore("videos", r.wrap, r.btn, false, false); } renderSeg(); renderFilters(); applyFilter();
   });
   $("#filters").addEventListener("click", e => {
     const b = e.target.closest(".chip"); if (!b) return;
@@ -233,22 +271,30 @@
   const pThumb = p => p.images[0]
     ? `<img src="${esc(p.images[0])}" alt="${esc(L(p.name))}" loading="lazy">`
     : ico("store");
+  let productEls = [];
   function renderStore() {
     const tags = [...new Set(PR.map(p => p.tag).filter(Boolean))];
     if (state.tag !== "all" && !tags.includes(state.tag)) state.tag = "all";
     $("#store-filters").innerHTML = tags.length > 1 ? [["all", t("store.all")], ...tags.map(x => [x, x])].map(([v, l]) => `<button class="chip${state.tag === v ? " is-on" : ""}" data-v="${esc(v)}">${esc(l)}</button>`).join("") : "";
-    $("#products").innerHTML = PR.map(p => `
-      <a class="product glass" href="#/p/${esc(p.id)}" data-tag="${esc(p.tag || "")}"${state.tag !== "all" && p.tag !== state.tag ? " hidden" : ""}>
-        <div class="p-img">${pThumb(p)}${p.tag ? `<span class="badge">${esc(p.tag)}</span>` : ""}</div>
+    const main = $("#products"), extra = $("#products-more");
+    main.innerHTML = ""; extra.innerHTML = "";
+    productEls = PR.map(p => {
+      const a = document.createElement("a");
+      a.className = "product glass"; a.href = `#/p/${p.id}`; a.dataset.tag = p.tag || "";
+      a.innerHTML = `<div class="p-img">${pThumb(p)}${p.tag ? `<span class="badge">${esc(p.tag)}</span>` : ""}</div>
         <div class="p-body"><h3>${esc(L(p.name))}</h3><p>${esc(L(p.header))}</p>
-          <div class="p-foot"><span class="p-price">${esc(p.price || "")}</span><span class="btn btn-sm">${esc(t("store.see"))}${ico("arrow")}</span></div></div>
-      </a>`).join("");
-    observeReveal($$(".product"), 6);
+          <div class="p-foot"><span class="p-price">${esc(p.price || "")}</span><span class="btn btn-sm">${esc(t("store.see"))}${ico("arrow")}</span></div></div>`;
+      a.hidden = state.tag !== "all" && p.tag !== state.tag;
+      main.append(a); return a;
+    });
+    distribute("store", productEls);
+    observeReveal(productEls.filter(el => !el.hidden && el.parentElement === main), 6);
   }
   $("#store-filters").addEventListener("click", e => {
     const b = e.target.closest(".chip"); if (!b) return;
     state.tag = b.dataset.v; $$(".chip", $("#store-filters")).forEach(c => c.classList.toggle("is-on", c === b));
-    $$(".product").forEach(p => p.hidden = state.tag !== "all" && p.dataset.tag !== state.tag);
+    productEls.forEach(el => { el.hidden = state.tag !== "all" && el.dataset.tag !== state.tag; });
+    distribute("store", productEls);
   });
 
   /* slider produk */
@@ -317,6 +363,7 @@
     renderBio(); if (statsDone) { statsDone = false; countUp(); }
     renderSeg(); renderFilters(); renderOrder(); renderStore(); renderOther();
     if (cur) fillModal(); if (curP) fillP();
+    labelMore("videos"); labelMore("store");
     requestAnimationFrame(() => { placeSeg(); placeDock(); });
   }
   $("#lang").addEventListener("click", e => {
@@ -351,14 +398,14 @@
     const cu = $("#cursor"); let mx = innerWidth / 2, my = innerHeight / 2, cx = mx, cy = my, over = false;
     addEventListener("mousemove", e => { mx = e.clientX; my = e.clientY; document.documentElement.style.setProperty("--mx", mx + "px"); document.documentElement.style.setProperty("--my", my + "px"); }, { passive: true });
     (function loop() { cx += (mx - cx) * .2; cy += (my - cy) * .2; cu.style.transform = `translate3d(${cx}px,${cy}px,0) scale(${over ? 1 : 0})`; cu.style.opacity = over ? 1 : 0; requestAnimationFrame(loop); })();
-    grid.addEventListener("mouseover", e => {
+    $("#edit").addEventListener("mouseover", e => {
       const c = e.target.closest(".card"); over = !!c; if (c && c !== hov.card && !calm) startPreview(c);
     });
-    grid.addEventListener("mouseleave", () => { over = false; stopPreview(); });
-    grid.addEventListener("mouseout", e => {
+    $("#edit").addEventListener("mouseleave", () => { over = false; stopPreview(); });
+    $("#edit").addEventListener("mouseout", e => {
       const c = e.target.closest(".card"); if (c && !c.contains(e.relatedTarget)) { c.style.transform = ""; if (hov.card === c) stopPreview(); }
     });
-    grid.addEventListener("mousemove", e => {
+    $("#edit").addEventListener("mousemove", e => {
       const c = e.target.closest(".card"); if (!c || calm) return;
       const r = c.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
       c.style.setProperty("--x", x + "px"); c.style.setProperty("--y", y + "px");

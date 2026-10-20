@@ -26,6 +26,7 @@
       <symbol id="i-store" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
       <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
       <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+      <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
       <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
       <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z" fill="currentColor"/></symbol>
     </defs>
@@ -105,7 +106,9 @@
       </div>
 
       <div class="grid" id="grid"></div>
+      <div class="more" id="more"><div class="more-in"><div class="grid" id="grid-more"></div></div></div>
       <p class="empty muted" id="empty" hidden data-i18n="edit.empty"></p>
+      <div class="more-btn-wrap" hidden><button class="btn btn-ghost more-btn" id="more-btn" aria-expanded="false"><span></span><svg class="ico"><use href="#i-chev"/></svg></button></div>
 
       <div class="order glass" id="order" data-reveal>
         <div class="order-head">
@@ -131,6 +134,8 @@
       </header>
       <div class="filters" id="store-filters" data-reveal role="group" aria-label="Store filter"></div>
       <div class="products" id="products"></div>
+      <div class="more" id="smore"><div class="more-in"><div class="products" id="products-more"></div></div></div>
+      <div class="more-btn-wrap" hidden><button class="btn btn-ghost more-btn" id="smore-btn" aria-expanded="false"><span></span><svg class="ico"><use href="#i-chev"/></svg></button></div>
     </section>
 
     <!-- ========== OTHER ========== -->

@@ -12,6 +12,7 @@ window.SITE = {
   whatsapp: "6288986045729",     // format internasional tanpa + dan spasi (dipakai tombol "Pesan edit")
   email: "ichinosehonamisan16@gmail.com",
   location: "Indonesia",
+  showLimit: 10,                 // jumlah video / produk yang langsung tampil. Sisanya masuk tombol "See more"
   tools: ["After Effects", "CapCut", "Topaz Video AI", "Roblox Studio"],
 
   /* Badge kecil di bawah nama */
