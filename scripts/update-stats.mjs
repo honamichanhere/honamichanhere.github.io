@@ -1,6 +1,7 @@
 // Ambil data otomatis lalu simpan ke js/stats.json:
 //  - YouTube Data API : tayang, judul, tanggal upload, durasi (butuh env YT_API_KEY, kalau kosong dilewati)
 //  - Avora (halaman publik): jumlah terjual, judul, harga, dan harga coret per produk (karena Avora belum punya API)
+//  - Rasio asli video  : dari gambar oar2 YouTube (vertikal untuk Shorts/Reels)
 //  - Roblox (publik)  : nama, jumlah pemain, total kunjungan, ikon, untuk game yang punya placeId
 import fs from "node:fs";
 import vm from "node:vm";
@@ -36,6 +37,21 @@ else {
     }
     console.log(`YouTube: ${ids.length} video dicek.`);
   } catch (e) { console.error(String(e)); failed = true; }
+}
+
+/* ---------- Rasio asli video (dari gambar oar2 YouTube; hanya sekali per video) ---------- */
+{
+  const jpgSize = b => { if (b[0] !== 0xff || b[1] !== 0xd8) return null; let i = 2; while (i < b.length) { if (b[i] !== 0xff) { i++; continue; } const mk = b[i + 1]; if (mk >= 0xc0 && mk <= 0xcf && mk !== 0xc4 && mk !== 0xc8 && mk !== 0xcc) return { h: b.readUInt16BE(i + 5), w: b.readUInt16BE(i + 7) }; i += 2 + b.readUInt16BE(i + 2); } return null; };
+  const ratios = { ...(out._ratio || {}) };
+  for (const id of new Set((win.VIDEOS || []).map(v => ytId(v.yt)).filter(Boolean))) {
+    if (ratios[id]) continue;
+    try {
+      const res = await fetch(`https://i.ytimg.com/vi/${id}/oar2.jpg`, { signal: AbortSignal.timeout(15000) });
+      if (!res.ok) continue;
+      const d = jpgSize(Buffer.from(await res.arrayBuffer())); if (d && d.w > 120) ratios[id] = d.w + ":" + d.h;
+    } catch {}
+  }
+  if (Object.keys(ratios).length) out._ratio = ratios;
 }
 
 /* ---------- Roblox ---------- */

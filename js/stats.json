@@ -44,8 +44,8 @@
   "_roblox": {
     "920587237": {
       "name": "[🎃] Adopt Me!",
-      "playing": 198688,
-      "visits": 45152005668,
+      "playing": 196264,
+      "visits": 45152493306,
       "image": "https://tr.rbxcdn.com/180DAY-b8643902ddd894dc03f124cffc7d69af/256/256/Image/Png/noFilter"
     }
   },
@@ -77,5 +77,9 @@
       "price": "Rp 50.000",
       "oldPrice": "Rp 70.000"
     }
+  },
+  "_ratio": {
+    "aqz-KE-bpKQ": "1280:720",
+    "WhWc3b3KhnY": "1280:536"
   }
 }

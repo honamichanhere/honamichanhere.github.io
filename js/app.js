@@ -53,12 +53,33 @@
   const listOfItem = p => (p.kind === "script" ? SC : PR);
 
   /* ---------- helpers ---------- */
+  const oar = id => `https://i.ytimg.com/vi/${id}/oar2.jpg`;   /* thumbnail dengan rasio ASLI video (vertikal untuk Shorts/Reels) */
   const thumb = id => `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
   const thumbLo = id => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+  /* rasio video (lebar/tinggi): manual (ratio: "9:16") > hasil deteksi (stats.json / gambar oar2) > 16:9 */
+  const R169 = 16 / 9;
+  const parseRatio = x => { if (!x) return 0; if (typeof x === "number") return x; const m = String(x).match(/^\s*(\d+(?:\.\d+)?)\s*[:x/]\s*(\d+(?:\.\d+)?)\s*$/); return m ? +m[1] / +m[2] : 0; };
+  const rCache = (() => { try { return JSON.parse(store.get("yt-ratio")) || {}; } catch { return {}; } })();
+  const byYt = Object.fromEntries(ALL.map(v => [v.yt, v]));
+  const clampR = r => Math.min(2.4, Math.max(.4, r));
+  const ratioYt = yt => { const v = byYt[yt]; return clampR((v && (parseRatio(v.ratio) || v.ratioAuto)) || rCache[yt] || R169); };
+  const ratioOf = v => clampR(parseRatio(v.ratio) || v.ratioAuto || rCache[v.yt] || R169);
+  /* "fit": video yang lebih tinggi dari 16:9 ditampilkan utuh di kotak 16:9 (bukan dipotong) */
+  const applyFit = (el, r) => { el.classList.toggle("fit", r < R169 - .06); el.style.setProperty("--r", r.toFixed(4)); };
+  function setRatio(yt, r) {
+    if (Math.abs((rCache[yt] || 0) - r) > .005) { rCache[yt] = +r.toFixed(4); store.set("yt-ratio", JSON.stringify(rCache)); }
+    $$(`[data-yt="${yt}"]`).forEach(el => applyFit(el, el.dataset.vid && byId[el.dataset.vid] ? ratioOf(byId[el.dataset.vid]) : ratioYt(yt)));
+    if (cur && cur.yt === yt) $(".frame").style.setProperty("--r", ratioOf(cur).toFixed(4));
+  }
   const img = (id, alt = "") => {
-    const i = new Image(); i.alt = alt; i.loading = "lazy"; i.decoding = "async"; i.src = thumb(id);
-    const fb = () => { if (!i.dataset.fb) { i.dataset.fb = 1; i.src = thumbLo(id); } };
-    i.addEventListener("error", fb); i.addEventListener("load", () => { if (i.naturalWidth <= 120) fb(); });
+    const i = new Image(); i.alt = alt; i.loading = "lazy"; i.decoding = "async"; i.src = oar(id);
+    let step = 0;
+    const next = () => { step++; i.src = step === 1 ? thumb(id) : thumbLo(id); };
+    i.addEventListener("error", () => { if (step < 2) next(); });
+    i.addEventListener("load", () => {
+      if (step === 0) { if (i.naturalWidth > 120) setRatio(id, i.naturalWidth / i.naturalHeight); else next(); }
+      else if (i.naturalWidth <= 120 && step < 2) next();
+    });
     return i;
   };
   const loc = () => (lang === "id" ? "id-ID" : "en-US");
@@ -144,7 +165,7 @@
   function discoverItems() {
     const out = [];
     SC.filter(s => s.discover).forEach(s => out.push({ kind: "script", r: rank(s), title: L(s.name), sub: L(s.header), href: itemHash(s), image: s.images[0], icon: "code", cta: t("spot.open") }));
-    ALL.filter(v => v.discover).forEach(v => out.push({ kind: "video", r: rank(v), title: L(v.title) || "…", sub: (descOf(v).split("\n").map(x => x.trim()).find(Boolean) || "").slice(0, 150) || [v.category, v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).join(" • "), href: `#/v/${v.id}`, yt: v.yt, cta: t("spot.open") }));
+    ALL.filter(v => v.discover).forEach(v => out.push({ kind: "video", r: rank(v), title: L(v.title) || "…", sub: (descOf(v).split("\n").map(x => x.trim()).find(Boolean) || "").slice(0, 150) || [v.category, v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).join(" • "), href: `#/v/${v.id}`, yt: v.yt, vid: v.id, cta: t("spot.open") }));
     PR.filter(p => p.discover).forEach(p => out.push({ kind: "product", r: rank(p), title: nameOf(p), sub: L(p.header), href: itemHash(p), image: p.images[0], icon: "store", price: [priceOf(p).now, soldTxt(p)].filter(Boolean).join(" • "), cta: t("store.see") }));
     window.GAMES.filter(g => g.discover && g.url).forEach(g => { const r = (g.placeId && ext.roblox[g.placeId]) || {}; out.push({ kind: "game", r: rank(g), title: L(g.name) || r.name || "Game", sub: L(g.desc), href: g.url, external: true, image: g.image || r.image, icon: "roblox", cta: t("game.play") }); });
     return out.sort((a, b) => a.r - b.r);
@@ -158,10 +179,10 @@
       const a = document.createElement("a");
       a.className = "spot-card"; a.href = it.href; if (it.external) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
       a.innerHTML = `<span class="spot-ribbon">${ico("star")}${esc(t("spot.label"))}</span>
-        <div class="spot-img"><span class="badge">${esc(t("kind." + it.kind))}</span>${it.kind === "video" ? `<span class="spot-play">${ico("play")}</span>` : ""}${it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy"${it.external ? ' referrerpolicy="no-referrer"' : ""}>` : it.yt ? "" : ico(it.icon || "star")}</div>
+        <div class="spot-img"${it.yt ? ` data-yt="${esc(it.yt)}" data-vid="${esc(it.vid)}"` : ""}><span class="badge">${esc(t("kind." + it.kind))}</span>${it.kind === "video" ? `<span class="spot-play">${ico("play")}</span>` : ""}${it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy"${it.external ? ' referrerpolicy="no-referrer"' : ""}>` : it.yt ? "" : ico(it.icon || "star")}</div>
         <div class="spot-body"><h3>${esc(it.title)}</h3><p>${esc(it.sub)}</p>
           <div class="spot-foot"><span class="btn btn-sm">${esc(it.cta)}${ico("arrow")}</span>${it.price ? `<small>${esc(it.price)}</small>` : ""}</div></div>`;
-      if (it.yt) $(".spot-img", a).prepend(img(it.yt, it.title));
+      if (it.yt) { const si = $(".spot-img", a); applyFit(si, byId[it.vid] ? ratioOf(byId[it.vid]) : ratioYt(it.yt)); si.prepend(img(it.yt, it.title)); }
       spot.append(a);
     });
     observeReveal($$(".spot-card"), 6);
@@ -225,9 +246,9 @@
   function makeCard(v) {
     const a = document.createElement("a");
     a.className = "card glass"; a.href = `#/v/${v.id}`; a.dataset.id = v.id;
-    a.innerHTML = `<div class="thumb"><span class="badge">${esc(v.category)}</span>${v.duration ? `<span class="dur">${esc(v.duration)}</span>` : ""}</div>
+    a.innerHTML = `<div class="thumb" data-yt="${esc(v.yt)}" data-vid="${esc(v.id)}"><span class="badge">${esc(v.category)}</span>${v.duration ? `<span class="dur">${esc(v.duration)}</span>` : ""}</div>
       <div class="card-body"><h3>${esc(L(v.title) || "…")}</h3><div class="card-meta">${[v.type === "client" ? v.client : "", v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")}</div></div>`;
-    $(".thumb", a).prepend(img(v.yt, L(v.title)));
+    const th = $(".thumb", a); applyFit(th, ratioOf(v)); th.prepend(img(v.yt, L(v.title)));
     return a;
   }
   function renderCards() {
@@ -522,6 +543,7 @@
   }
   function fillModal() {
     const v = cur, ids = modal._ids || [], list = v.type === "other" ? OTV() : EDIT();
+    $(".frame").style.setProperty("--r", ratioOf(v).toFixed(4));
     $("#m-no").textContent = pad(list.indexOf(v) + 1); $("#m-total").textContent = pad(list.length);
     $("#m-cat").textContent = v.category; $("#m-title").textContent = L(v.title);
     $("#m-desc").innerHTML = linkify(descOf(v)); $("#m-desc").hidden = !descOf(v);
@@ -576,6 +598,7 @@
   fetch("js/stats.json?" + Date.now()).then(r => r.ok ? r.json() : {}).then(st => {
     let changed = false;
     ALL.forEach(v => {
+      const rs = parseRatio(st._ratio && st._ratio[v.yt]); if (rs) { v.ratioAuto = rs; changed = true; }
       const x = st[v.yt]; if (!x) return;
       if (x.views != null) v.views = x.views;
       if (!v.uploaded && x.uploaded) v.uploaded = x.uploaded;

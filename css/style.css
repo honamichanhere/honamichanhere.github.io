@@ -478,3 +478,12 @@ em{animation:none;filter:none}
   .sx-price span{margin-top:0}
   .sx-price .tag-best{top:-.55rem;left:auto;right:.8rem;transform:none}
 }
+
+/* ---------- rasio video: 16:9, 9:16, 1:1, 3:4, 4:3 (dan rasio lain) ---------- */
+/* kartu & Discover: video non-16:9 tampil UTUH di kotak 16:9 (tidak terpotong) */
+.thumb.fit,.spot-img.fit{background:linear-gradient(135deg,#17120f,#0b0a09)}
+.thumb.fit img,.spot-img.fit img{object-fit:contain}
+.thumb.fit iframe{inset:0 auto 0 50%;width:calc(var(--r) * 56.25%);height:100%;transform:translateX(-50%)}
+/* pemutar: frame mengikuti rasio asli video */
+.frame{aspect-ratio:var(--r,1.7778);width:min(100%,calc((100svh - 9rem) * var(--r,1.7778)))}
+@media (max-width:900px){.frame{width:min(100%,calc((100svh - 8rem) * var(--r,1.7778)))}}

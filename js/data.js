@@ -62,6 +62,8 @@ window.LINKS = [
    type      : "client" (hasil edit buat client) atau "own" (konten sendiri). Kosong = "client"
                "other" = bukan showcase edit (mis. tutorial). Tampil di blok Other, tidak masuk hitungan statistik
    discover  : true atau angka urutan (1 = paling depan) = ikut tampil di blok Discover (sorotan)
+   ratio     : (opsional) rasio video, mis. "9:16", "1:1", "3:4", "4:3", "16:9". Kosong = TERDETEKSI OTOMATIS dari YouTube
+               (Shorts/Reels vertikal dikenali sendiri). Isi hanya kalau deteksi otomatisnya keliru
    Disarankan: client, views, uploaded (TAHUN-BULAN-TANGGAL)
    Opsional  : title (kosong = otomatis dari YouTube), duration, tools, desc {id,en},
                preview (detik mulai preview saat hover di desktop), featured: true
