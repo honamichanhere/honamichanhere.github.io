@@ -389,7 +389,8 @@
     if (max > 0 && h.scrollTop >= max - 4) id = "other";
     if (id !== activeId) { activeId = id; placeDock(); }
   }
-  addEventListener("scroll", onScroll, { passive: true });
+  let scrollTick = false;
+  addEventListener("scroll", () => { if (scrollTick) return; scrollTick = true; requestAnimationFrame(() => { scrollTick = false; onScroll(); }); }, { passive: true });
   addEventListener("resize", () => { placeDock(); placeSeg(); });
   observeReveal($$("[data-reveal]"));
 
