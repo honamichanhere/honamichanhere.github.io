@@ -34,7 +34,7 @@ Buka `js/data.js` di GitHub (klik file → ikon pensil ✏️), salin satu baris
 | `preview` | Detik mulai preview saat hover di desktop (opsional) |
 | `ratio` | Rasio video, mis. `"9:16"`, `"1:1"`, `"3:4"`, `"4:3"`, `"16:9"` (opsional). **Kosong = terdeteksi otomatis** dari gambar rasio asli YouTube |
 | `tools`, `desc` | Tools yang dipakai & deskripsi `{ id: "...", en: "..." }` (opsional) |
-| `featured` | `true` = tampil paling depan |
+| `featured` | `true` = tampil paling depan. Isi angka (1, 2, 3, …) untuk mengatur urutan di antara video pilihan; angka kecil lebih dulu. Sisanya urut tanggal upload, terbaru di atas |
 
 **Tombol See more:** halaman hanya menampilkan 10 video (dan 10 produk di Store) langsung. Kalau lebih, muncul tombol "See N more" yang membuka sisanya seperti dropdown, lalu berganti jadi "Show less" untuk menyembunyikannya lagi. Ubah jumlahnya lewat `showLimit` di `SITE` (`js/data.js`).
 

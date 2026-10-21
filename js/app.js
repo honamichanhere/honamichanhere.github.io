@@ -35,7 +35,8 @@
     return { ...v, yt, id, type: v.type === "own" ? "own" : v.type === "other" ? "other" : "client", category: v.category || "Video", client: v.client || "", views: v.views ?? null };
   });
   const descOf = v => L(v.desc) || v.descAuto || "";
-  const sortAll = () => ALL.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (b.uploaded || "").localeCompare(a.uploaded || ""));
+  const fRank = v => v.featured ? (typeof v.featured === "number" ? v.featured : 999) : 1e9;   /* featured: angka kecil = paling depan */
+  const sortAll = () => ALL.sort((a, b) => fRank(a) - fRank(b) || (b.at || b.uploaded || "").localeCompare(a.at || a.uploaded || ""));
   sortAll();
   const EDIT = () => ALL.filter(v => v.type !== "other"), OTV = () => ALL.filter(v => v.type === "other");
   const byId = Object.fromEntries(ALL.map(v => [v.id, v]));
@@ -602,6 +603,7 @@
       const x = st[v.yt]; if (!x) return;
       if (x.views != null) v.views = x.views;
       if (!v.uploaded && x.uploaded) v.uploaded = x.uploaded;
+      if (x.at) v.at = x.at;
       if (!v.duration && x.duration) v.duration = x.duration;
       if (!v.title && x.title) v.title = x.title;
       if (x.description) v.descAuto = x.description;
