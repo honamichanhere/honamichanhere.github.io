@@ -489,3 +489,11 @@ em{animation:none;filter:none}
 @media (max-width:900px){.frame{width:min(100%,calc((100svh - 8rem) * var(--r,1.7778)))}}
 
 .g-body p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+/* harga: dibagi per kelompok */
+.order-note{margin:0 0 1rem;padding:.8rem 1rem;border-radius:14px;border:1px dashed rgba(255,160,30,.5);background:rgba(255,160,30,.06);color:var(--muted);font-size:.84rem;line-height:1.55}
+.pgroup+.pgroup{margin-top:1.3rem}
+.pg-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem .8rem;margin-bottom:.6rem}
+.pg-head h3{font:800 1.05rem var(--display);text-transform:uppercase}
+.pg-head span{font-size:.84rem;color:var(--muted)}
+.plan:only-child{max-width:24rem}

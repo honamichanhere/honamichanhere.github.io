@@ -293,13 +293,14 @@
   /* order panel (ringkas, animasi buka-tutup mulus) */
   const qaHtml = (q, aHtml, open) => `<div class="qa${open ? " open" : ""}"><button class="qa-q" aria-expanded="${open ? "true" : "false"}">${esc(q)}</button><div class="qa-a"><div>${aHtml}</div></div></div>`;
   function orderHtml(kind) {
-    if (kind === "price") return `<div class="plans">${window.PRICING.map(p => `
+    if (kind === "price") return `<p class="order-note">${esc(t("order.note"))}</p>${window.PRICING.map(g => `
+      <div class="pgroup"><div class="pg-head"><h3>${esc(L(g.name))}</h3>${g.desc ? `<span>${esc(L(g.desc))}</span>` : ""}</div>
+      <div class="plans">${g.plans.map((p, i) => { const nm = L(p.name) || (g.plans.length > 1 ? `${t("order.plan")} ${i + 1}` : ""); return `
         <div class="plan${p.popular ? " pop" : ""}">${p.popular ? `<span class="pop-tag">${esc(t("order.popular"))}</span>` : ""}
-          <h4>${esc(L(p.name))}</h4><div class="price">${esc(p.price)}<small>${esc(L(p.unit))}</small></div>
-          <p class="muted">${esc(L(p.desc))}</p>
+          ${nm ? `<h4>${esc(nm)}</h4>` : ""}<div class="price">${esc(p.price)}<small>${esc(L(p.unit))}</small></div>
           <ul>${p.features.map(f => `<li>${esc(L(f))}</li>`).join("")}</ul>
-          <a class="btn btn-sm" href="${esc(contactUrl(t("msg.pkg").replace("{n}", L(p.name))))}" target="_blank" rel="noopener">${esc(t("order.pick"))}</a>
-        </div>`).join("")}</div><p class="order-note">${esc(t("order.note"))}</p>`;
+          <a class="btn btn-sm" href="${esc(contactUrl(t("msg.pkg").replace("{n}", `${[L(g.name), nm].filter(Boolean).join(" · ")} (${p.price})`)))}" target="_blank" rel="noopener">${esc(t("order.pick"))}</a>
+        </div>`; }).join("")}</div></div>`).join("")}`;
     if (kind === "steps") return `<ol class="steps">${[1, 2, 3, 4].map(i => `<li><b>0${i}</b><h4>${esc(t("step." + i + "t"))}</h4><p>${esc(t("step." + i + "d"))}</p></li>`).join("")}</ol>`;
     return window.FAQ.map(f => qaHtml(L(f.q), `<p>${esc(L(f.a))}</p>`)).join("");
   }

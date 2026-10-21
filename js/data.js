@@ -279,31 +279,41 @@ window.OTHER_LINKS = [
   { label: "Trakteer",          desc: { id: "Dukung karya gua", en: "Support my work" },                              icon: "link",    url: "" },    // [CONTOH]
 ];
 
-/* [CONTOH] Paket harga jasa edit (tampil ringkas di bawah tab Client). popular: true = highlight */
+/* Harga jasa edit (tampil di tab Client → Harga). Dibagi per kelompok; tiap kelompok punya beberapa paket.
+   name/desc : nama & keterangan kelompok
+   plans     : price, unit, features (daftar), popular: true = highlight, name (opsional, default "Paket 1, 2, ...") */
 window.PRICING = [
-  { name: { id: "Short", en: "Short" }, price: "Rp 150rb", unit: { id: "/ video", en: "/ video" },
-    desc: { id: "Reels, TikTok, Shorts.", en: "Reels, TikTok, Shorts." },
-    features: [
-      { id: "Sampai 60 detik", en: "Up to 60 seconds" },
-      { id: "Caption & efek dasar", en: "Captions & basic effects" },
-      { id: "2x revisi", en: "2 revisions" },
-      { id: "Selesai 2 hari", en: "2-day delivery" },
+  { name: { id: "Regular", en: "Regular" }, desc: { id: "Reels, TikTok, Shorts, dll.", en: "Reels, TikTok, Shorts, etc." },
+    plans: [
+      { price: "Rp 50rb", unit: { id: "/ video", en: "/ video" }, features: [
+        { id: "Maksimal 30 detik", en: "Up to 30 seconds" },
+        { id: "Caption / Lirik", en: "Caption / Lyrics" },
+        { id: "Tanpa revisi", en: "No revision" } ] },
+      { price: "Rp 100rb", unit: { id: "/ video", en: "/ video" }, features: [
+        { id: "Maksimal 60 detik", en: "Up to 60 seconds" },
+        { id: "Caption / Lirik / Efek dasar", en: "Caption / Lyrics / Basic effects" },
+        { id: "Tanpa revisi", en: "No revision" } ] },
+      { price: "Rp 150rb", unit: { id: "/ video", en: "/ video" }, features: [
+        { id: "Maksimal 60 detik", en: "Up to 60 seconds" },
+        { id: "Caption / Lirik / Efek / Shake", en: "Caption / Lyrics / Effects / Shake" },
+        { id: "1x revisi", en: "1 revision" } ] },
     ] },
-  { name: { id: "Pro", en: "Pro" }, price: "Rp 500rb", unit: { id: "/ video", en: "/ video" }, popular: true,
-    desc: { id: "Promosi & YouTube.", en: "Promo & YouTube." },
-    features: [
-      { id: "Sampai 5 menit", en: "Up to 5 minutes" },
-      { id: "Color grading & sound design", en: "Color grading & sound design" },
-      { id: "Motion graphic", en: "Motion graphics" },
-      { id: "3x revisi", en: "3 revisions" },
+  /* [CONTOH] kelompok di bawah ini masih contoh, ganti sesuai paket aslimu */
+  { name: { id: "Pro", en: "Pro" }, desc: { id: "Promosi & YouTube.", en: "Promo & YouTube." },
+    plans: [
+      { price: "Rp 500rb", unit: { id: "/ video", en: "/ video" }, features: [
+        { id: "Sampai 5 menit", en: "Up to 5 minutes" },
+        { id: "Color grading & sound design", en: "Color grading & sound design" },
+        { id: "Motion graphic", en: "Motion graphics" },
+        { id: "3x revisi", en: "3 revisions" } ] },
     ] },
-  { name: { id: "Cinematic", en: "Cinematic" }, price: "Rp 1,5jt", unit: { id: "mulai dari", en: "from" },
-    desc: { id: "Wedding & brand film.", en: "Weddings & brand films." },
-    features: [
-      { id: "Durasi bebas", en: "Any duration" },
-      { id: "Grading sinematik + VFX", en: "Cinematic grading + VFX" },
-      { id: "Revisi sampai puas", en: "Revisions until happy" },
-      { id: "Prioritas pengerjaan", en: "Priority turnaround" },
+  { name: { id: "Cinematic", en: "Cinematic" }, desc: { id: "Wedding & brand film.", en: "Weddings & brand films." },
+    plans: [
+      { price: "Rp 1,5jt", unit: { id: "mulai dari", en: "from" }, features: [
+        { id: "Durasi bebas", en: "Any duration" },
+        { id: "Grading sinematik + VFX", en: "Cinematic grading + VFX" },
+        { id: "Revisi sampai puas", en: "Revisions until happy" },
+        { id: "Prioritas pengerjaan", en: "Priority turnaround" } ] },
     ] },
 ];
 
