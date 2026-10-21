@@ -32,8 +32,8 @@ window.SITE = {
   stats: [
     { auto: "videos" },
     { auto: "views" },
-    { auto: "clients" },
-    { n: 1, suffix: "+", label: { id: "Tahun pengalaman", en: "Years of experience" } },   // [CONTOH]
+    { n: 100, suffix: "+", label: { id: "Client", en: "Clients" } },
+    { n: 3, suffix: "+", label: { id: "Tahun pengalaman", en: "Years of experience" } },
   ],
 };
 
