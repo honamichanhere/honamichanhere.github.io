@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: update-stats
@@ -27,8 +28,10 @@ jobs:
           YT_API_KEY: ${{ secrets.YT_API_KEY }}
         run: node scripts/update-stats.mjs
       - name: Commit changes
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add js/stats.json
-          git diff --staged --quiet || (git commit -m "chore: update video stats" && git fetch origin main && git rebase origin/main && git push origin HEAD:main)
+          git diff --staged --quiet || (git commit -m "chore: update video stats" && git fetch origin main && git rebase origin/main && git push origin HEAD:main && gh workflow run pages.yml --ref main)
