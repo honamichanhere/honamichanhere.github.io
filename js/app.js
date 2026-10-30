@@ -20,7 +20,7 @@
   /* ---------- state ---------- */
   let lang = store.get("lang") || (/^id\b/i.test(navigator.language || "") ? "id" : "en");
   if (!D[lang]) lang = "id";
-  const state = { type: "client", cat: "all", tag: "all", order: "" };
+  const state = { type: "client", cat: "all", tag: "all", order: "", q: "" };
   let cur = null, curP = null, player = null, apiState = 0, statsDone = false, ext = { roblox: {}, sold: {}, avora: {} };
 
   const t = k => D[lang][k] ?? k;
@@ -291,7 +291,12 @@
   function applyFilter(instant) {
     const first = new Map(cards.filter(c => !c.hidden && c.parentElement === grid).map(c => [c, c.getBoundingClientRect()]));
     let n = 0;
-    cards.forEach(c => { const v = byId[c.dataset.id]; c.hidden = v.type !== state.type || (state.cat !== "all" && v.category !== state.cat); if (!c.hidden) n++; });
+    const q = state.q.trim().toLowerCase();
+    cards.forEach(c => {
+      const v = byId[c.dataset.id];
+      c.hidden = v.type !== state.type || (state.cat !== "all" && v.category !== state.cat) || (q && ![L(v.title), v.category, v.client, (v.tools || []).join(" ")].join(" ").toLowerCase().includes(q));
+      if (!c.hidden) n++;
+    });
     distribute("videos", cards);
     cards.forEach(c => { if (c.parentElement === gridMore) c.classList.remove("reveal", "in"); });
     $("#empty").hidden = n > 0;
@@ -304,6 +309,9 @@
       else c.animate([{ opacity: 0, transform: "translateY(18px) scale(.96)" }, { opacity: 1, transform: "none" }], { duration: 480, easing: "cubic-bezier(.2,.8,.2,1)" });
     });
   }
+  const qi = $("#q"), qx = $("#q-x");
+  qi.addEventListener("input", () => { state.q = qi.value; qx.hidden = !qi.value; stopPreview(); applyFilter(); });
+  qx.addEventListener("click", () => { qi.value = ""; state.q = ""; qx.hidden = true; qi.focus(); stopPreview(); applyFilter(); });
   $("#seg").addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b || b.dataset.type === state.type) return;
     stopPreview(); state.type = b.dataset.type; state.cat = "all"; { const r = moreRefs.videos(); setMore("videos", r.wrap, r.btn, false, false); } renderSeg(); renderFilters(); applyFilter();
@@ -412,6 +420,8 @@
     dots.innerHTML = n > 1 ? Array.from({ length: n }, (_, i) => `<button data-i="${i}" aria-label="Image ${i + 1}"></button>`).join("") : "";
     $("#s-prev").hidden = $("#s-next").hidden = n < 2;
     slideIdx = 0; slides.scrollLeft = 0; markDot();
+    const sl = $("#slider"); sl.style.removeProperty("--sr");
+    if (p.images[0]) { const i = new Image(); i.onload = () => { if (i.naturalHeight) sl.style.setProperty("--sr", (i.naturalWidth / i.naturalHeight).toFixed(4)); }; i.src = p.images[0]; }
   }
   const markDot = () => $$("button", dots).forEach((d, i) => d.classList.toggle("on", i === slideIdx));
   const goSlide = i => { const n = slides.children.length; slideIdx = (i + n) % n; slides.scrollTo({ left: slideIdx * slides.clientWidth, behavior: calm ? "auto" : "smooth" }); markDot(); };
@@ -503,7 +513,7 @@
 
   /* ---------- i18n ---------- */
   function applyI18n() {
-    document.documentElement.lang = lang;
+    document.documentElement.lang = lang; $("#q").placeholder = t("edit.search");
     $$("[data-i18n]").forEach(el => el.innerHTML = t(el.dataset.i18n));
     document.title = `${S.name} — ${L(S.role)}`;
     $("#lang").dataset.l = lang; $$("#lang button").forEach(b => b.classList.toggle("is-on", b.dataset.lang === lang));

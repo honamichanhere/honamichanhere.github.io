@@ -164,7 +164,7 @@ window.PRODUCTS = [
   /* Produk asli */
   { id: "korless-visual", name: { id: "Korless Visual - Roblox Script", en: "Korless Visual - Roblox Script" }, tag: "Roblox", price: "Rp 10.000",
     header: { id: "Efek visual Korless untuk Mobile/Desktop", en: "Korless visual effect for Mobile/Desktop" },
-    images: ["assets/store/korless-visual.webp"],
+    images: ["assets/store/korless-visual.webp", "assets/store/korless-visual-2.webp", "assets/store/korless-visual-3.webp"],
     desc: {
       id: "Korless Visual untuk Mobile/Desktop\n• Mendukung Evade\n• Mendukung game lain\n• Mendukung R6/R15\n• Risiko rendah\n\nPENTING! Baca sebelum membeli. Script ini hanya untuk efek visual: efek Korless hanya terlihat di layar kamu sendiri. Perlu dipahami bahwa metode ini punya risiko karena memakai exploit, dan pembeli menanggung penuh semua risikonya. Aku hanya menjual script ini bagi yang berminat.",
       en: "Korless Visual for Mobile/Desktop\n• Evade support\n• Other games support\n• R6/R15 support\n• Low risk\n\nIMPORTANT! Read before purchase. This script is for visual purposes only: the Korless effect is visible only on your screen. Please be aware that this method carries risks, as it relies on an exploit, and the buyer assumes full responsibility. I am simply selling the script to those interested.",
