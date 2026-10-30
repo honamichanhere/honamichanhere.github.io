@@ -165,10 +165,10 @@
   const rank = x => (x.discover === true ? 99 : +x.discover || 99);
   function discoverItems() {
     const out = [];
-    SC.filter(s => s.discover).forEach(s => out.push({ kind: "script", r: rank(s), title: L(s.name), sub: L(s.header), href: itemHash(s), image: s.images[0], icon: "code", cta: t("spot.open") }));
-    ALL.filter(v => v.discover).forEach(v => out.push({ kind: "video", r: rank(v), title: L(v.title) || "…", sub: (descOf(v).split("\n").map(x => x.trim()).find(Boolean) || "").slice(0, 150) || [v.category, v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).join(" • "), href: `#/v/${v.id}`, yt: v.yt, vid: v.id, cta: t("spot.open") }));
-    PR.filter(p => p.discover).forEach(p => out.push({ kind: "product", r: rank(p), title: nameOf(p), sub: L(p.header), href: itemHash(p), image: p.images[0], icon: "store", price: [priceOf(p).now, soldTxt(p)].filter(Boolean).join(" • "), cta: t("store.see") }));
-    window.GAMES.filter(g => g.discover && g.url).forEach(g => { const r = (g.placeId && ext.roblox[g.placeId]) || {}; out.push({ kind: "game", r: rank(g), title: L(g.name) || r.name || "Game", sub: L(g.desc) || r.description || "", href: g.url, external: true, image: g.image || r.image, icon: "roblox", cta: t("game.play") }); });
+    SC.filter(s => s.discover).forEach(s => out.push({ kind: "script", r: rank(s), title: L(s.name), sub: L(s.header), href: itemHash(s), key: itemHash(s), image: s.images[0], icon: "code", cta: t("spot.open") }));
+    ALL.filter(v => v.discover).forEach(v => out.push({ kind: "video", r: rank(v), title: L(v.title) || "…", sub: (descOf(v).split("\n").map(x => x.trim()).find(Boolean) || "").slice(0, 150) || [v.category, v.views != null ? `${compact(v.views)} ${t("views")}` : "", ago(v.uploaded)].filter(Boolean).join(" • "), href: `#/v/${v.id}`, key: "v:" + v.id, yt: v.yt, vid: v.id, cta: t("spot.open") }));
+    PR.filter(p => p.discover).forEach(p => out.push({ kind: "product", r: rank(p), title: nameOf(p), sub: L(p.header), href: itemHash(p), key: itemHash(p), image: p.images[0], icon: "store", price: [priceOf(p).now, soldTxt(p)].filter(Boolean).join(" • "), cta: t("spot.open") }));
+    window.GAMES.forEach((g, gi) => { if (!g.discover || !g.url) return; const r = (g.placeId && ext.roblox[g.placeId]) || {}; out.push({ kind: "game", r: rank(g), title: L(g.name) || r.name || "Game", sub: L(g.desc) || r.description || "", href: g.url, key: "g:" + gi, image: g.image || r.image, icon: "roblox", cta: t("spot.open") }); });
     return out.sort((a, b) => a.r - b.r);
   }
   function renderDiscover() {
@@ -178,9 +178,9 @@
     spot.innerHTML = "";
     items.forEach(it => {
       const a = document.createElement("a");
-      a.className = "spot-card"; a.href = it.href; if (it.external) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+      a.className = "spot-card"; a.href = it.href; a.dataset.key = it.key;
       a.innerHTML = `<span class="spot-ribbon">${ico("star")}${esc(t("spot.label"))}</span>
-        <div class="spot-img"${it.yt ? ` data-yt="${esc(it.yt)}" data-vid="${esc(it.vid)}"` : ""}><span class="badge">${esc(t("kind." + it.kind))}</span>${it.kind === "video" ? `<span class="spot-play">${ico("play")}</span>` : ""}${it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy"${it.external ? ' referrerpolicy="no-referrer"' : ""}>` : it.yt ? "" : ico(it.icon || "star")}</div>
+        <div class="spot-img"${it.yt ? ` data-yt="${esc(it.yt)}" data-vid="${esc(it.vid)}"` : ""}><span class="badge">${esc(t("kind." + it.kind))}</span>${it.kind === "video" ? `<span class="spot-play">${ico("play")}</span>` : ""}${it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy"${it.key[0] === "g" ? ' referrerpolicy="no-referrer"' : ""}>` : it.yt ? "" : ico(it.icon || "star")}</div>
         <div class="spot-body"><h3>${esc(it.title)}</h3><p>${esc(it.sub)}</p>
           <div class="spot-foot"><span class="btn btn-sm">${esc(it.cta)}${ico("arrow")}</span>${it.price ? `<small>${esc(it.price)}</small>` : ""}</div></div>`;
       if (it.yt) { const si = $(".spot-img", a); applyFit(si, byId[it.vid] ? ratioOf(byId[it.vid]) : ratioYt(it.yt)); si.prepend(img(it.yt, it.title)); }
@@ -189,6 +189,37 @@
     observeReveal($$(".spot-card"), 6);
     requestAnimationFrame(() => { placeDock(); onScroll(); });
   }
+
+  /* klik kartu Discover = scroll ke tempat aslinya (bukan membuka popup) */
+  const flashEl = el => { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 2300); };
+  function goSpot(key) {
+    let wait = 60;
+    const open = k => { const r = moreRefs[k](); if (!moreOpen[k]) { setMore(k, r.wrap, r.btn, true); wait = calm ? 80 : 720; } };
+    if (key[0] === "v") {
+      const v = byId[key.slice(2)]; if (!v) return false;
+      if (v.type === "other") { /* sudah tampil di Other */ }
+      else {
+        if (state.type !== v.type) { state.type = v.type; state.cat = "all"; renderSeg(); renderFilters(); applyFilter(true); }
+        else if (state.cat !== "all" && v.category !== state.cat) { state.cat = "all"; renderFilters(); applyFilter(true); }
+        const c = cards.find(x => x.dataset.id === v.id); if (c && c.parentElement === gridMore) open("videos");
+      }
+    } else if (key[0] === "#" && key[2] === "p") {
+      const el = productEls.find(x => x.dataset.key === key);
+      if (el && el.hidden) { state.tag = "all"; renderStore(); }
+      const el2 = productEls.find(x => x.dataset.key === key); if (el2 && el2.parentElement === $("#products-more")) open("store");
+    }
+    const target = key[0] === "v" ? $(`.card[data-id="${key.slice(2)}"]`) : $(`[data-key="${key}"]:not(.spot-card)`);
+    if (!target) return false;
+    setTimeout(() => {
+      const y = target.getBoundingClientRect().top + scrollY - Math.max(0, (innerHeight - target.offsetHeight) / 2);
+      scrollTo({ top: Math.max(0, y), behavior: calm ? "auto" : "smooth" }); flashEl(target);
+    }, wait);
+    return true;
+  }
+  $("#spot").addEventListener("click", e => {
+    const a = e.target.closest(".spot-card"); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+    if (goSpot(a.dataset.key)) e.preventDefault();
+  });
 
   /* ---------- EDIT ---------- */
   const grid = $("#grid"), gridMore = $("#grid-more"); let cards = [];
@@ -355,7 +386,7 @@
     main.innerHTML = ""; extra.innerHTML = "";
     productEls = PR.map(p => {
       const a = document.createElement("a");
-      a.className = "product glass"; a.href = itemHash(p); a.dataset.tag = p.tag || "";
+      a.className = "product glass"; a.href = itemHash(p); a.dataset.tag = p.tag || ""; a.dataset.key = itemHash(p);
       a.innerHTML = `<div class="p-img">${pThumb(p)}${p.tag ? `<span class="badge">${esc(p.tag)}</span>` : ""}</div>
         <div class="p-body"><h3>${esc(nameOf(p))}</h3><p>${esc(L(p.header))}</p>${soldTxt(p) ? `<span class="p-sold">${ico("store")}${esc(soldTxt(p))}</span>` : ""}
           <div class="p-foot"><div class="p-pricebox"><span class="p-price">${esc(priceOf(p).now)}</span>${priceOf(p).old && priceOf(p).old !== priceOf(p).now ? `<s class="p-old">${esc(priceOf(p).old)}</s>` : ""}</div><span class="btn btn-sm">${esc(t("store.see"))}${ico("arrow")}</span></div></div>`;
@@ -443,7 +474,7 @@
   function renderOther() {
     /* script & tools */
     $("#scripts").innerHTML = SC.map(s => `
-      <a class="product glass" href="${esc(itemHash(s))}">
+      <a class="product glass" href="${esc(itemHash(s))}" data-key="${esc(itemHash(s))}">
         <div class="p-img wide">${pThumb(s)}${s.tag ? `<span class="badge">${esc(s.tag)}</span>` : ""}${s.status ? `<span class="chip-status">${esc(L(s.status))}</span>` : ""}</div>
         <div class="p-body"><h3>${esc(L(s.name))}</h3><p>${esc(L(s.header))}</p>
           <div class="p-foot"><span></span><span class="btn btn-sm">${esc(t("script.open"))}${ico("arrow")}</span></div></div>
@@ -455,9 +486,9 @@
     OTV().forEach(v => ov.append(makeCard(v)));
     $("#ovideos-h").hidden = !OTV().length;
     /* game */
-    $("#games").innerHTML = window.GAMES.map(g => {
+    $("#games").innerHTML = window.GAMES.map((g, gi) => {
       const r = (g.placeId && ext.roblox[g.placeId]) || {}, name = L(g.name) || r.name || "Game", image = g.image || r.image;
-      return `<article class="game glass">
+      return `<article class="game glass" data-key="g:${gi}">
         <div class="g-img">${image ? `<img src="${esc(image)}" alt="${esc(name)}" loading="lazy" referrerpolicy="no-referrer">` : ico("roblox")}</div>
         <div class="g-body"><h3>${esc(name)}</h3><p>${esc(L(g.desc) || r.description || "")}</p>
           ${r.playing != null || r.visits != null ? `<div class="g-stats">${r.playing != null ? `<span><b>${compact(r.playing)}</b> ${esc(t("game.playing"))}</span>` : ""}${r.visits != null ? `<span><b>${compact(r.visits)}</b> ${esc(t("game.visits"))}</span>` : ""}</div>` : ""}

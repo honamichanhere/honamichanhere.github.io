@@ -12,7 +12,7 @@
   --ease:cubic-bezier(.2,.8,.2,1);
 }
 *{box-sizing:border-box;margin:0}
-html{font-size:clamp(16px,calc(.42vw + 10.5px),26px);overflow-x:clip;scroll-behavior:smooth;scroll-padding-top:calc(var(--dock) + .6rem);-webkit-text-size-adjust:100%}
+html{font-size:clamp(14px,calc(.38vw + 9px),23px);overflow-x:clip;scroll-behavior:smooth;scroll-padding-top:calc(var(--dock) + .6rem);-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font:400 1rem/1.6 var(--sans);overflow-x:hidden;overflow-x:clip;-webkit-font-smoothing:antialiased}
 body.lock{overflow:hidden}
 a{color:inherit;text-decoration:none}
@@ -78,10 +78,10 @@ em{font-style:normal;background:var(--grad);-webkit-background-clip:text;backgro
 @media (max-width:420px){.dock-brand{display:none}.dock-in{padding-left:.35rem}.dock-nav{justify-content:center}}
 
 /* ---------- blocks ---------- */
-.blk{position:relative;max-width:var(--max);margin:0 auto;padding:clamp(4rem,7vw,6.5rem) var(--pad) 1rem}
+.blk{position:relative;max-width:var(--max);margin:0 auto;padding:clamp(3rem,5vw,4.6rem) var(--pad) .6rem}
 .blk+.blk{border-top:1px solid var(--glass-line)}
 #bio{padding-top:calc(var(--dock) + 2.2rem);border-top:0}
-.blk-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1.2rem;flex-wrap:wrap;margin-bottom:1.8rem}
+.blk-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1.2rem;flex-wrap:wrap;margin-bottom:1.2rem}
 .h2{font:900 clamp(1.9rem,4.6vw,3.8rem)/1 var(--display);text-transform:uppercase;letter-spacing:-.03em}
 .blk-head .muted{max-width:28rem;font-size:.95rem}
 .sub-h{font:700 .8rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:2rem 0 .9rem}
@@ -497,3 +497,7 @@ em{animation:none;filter:none}
 .pg-head h3{font:800 1.05rem var(--display);text-transform:uppercase}
 .pg-head span{font-size:.84rem;color:var(--muted)}
 .plan:only-child{max-width:24rem}
+
+/* sorotan Discover: kartu tujuan berkedip setelah di-scroll */
+@keyframes flash{0%,100%{box-shadow:0 0 0 0 rgba(255,199,44,0)}25%,70%{box-shadow:0 0 0 3px rgba(255,199,44,.95),0 0 46px rgba(255,122,24,.65)}}
+.flash{animation:flash 2.2s var(--ease) 1;border-radius:20px}

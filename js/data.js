@@ -218,7 +218,7 @@ window.SCRIPTS = [
       en: "A clean, modular Roblox script hub with global features and dedicated modules for each supported game. Lightweight, easy to use, and updated regularly.",
     },
     images: ["assets/other/mugiwara-hub.webp"],
-    loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/honamichanhere/Mugiwara-HUB/refs/heads/main/Main.lua"))()',
+    loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/honamichanhere/MugiwaraHub/refs/heads/main/Main.lua"))()',
     games: [
       { label: { id: "Universal", en: "Universal" } },
       { label: "Evade" },
@@ -238,7 +238,7 @@ window.SCRIPTS = [
         { label: { id: "30 Hari", en: "30 Days" }, price: "Rp 30.000" },
         { label: "Lifetime", price: "Rp 100.000", best: true },
       ],
-      order: { text: { id: "Untuk order, DM di TikTok", en: "To order, DM me on TikTok" }, label: "@honamichanhere", url: "https://www.tiktok.com/@honamichanhere" },
+      order: { text: { id: "Untuk beli, hubungi lewat Discord", en: "To buy, contact me on Discord" }, label: "Discord EVACORE", url: "https://discord.gg/djmrevtSV7" },
     },
     steps: [
       { id: "Buka executor kamu (Xeno, Delta, atau executor lain yang didukung).", en: "Open your executor (Xeno, Delta, or any supported executor)." },
