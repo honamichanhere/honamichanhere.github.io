@@ -174,7 +174,7 @@ window.PRODUCTS = [
 
   { id: "evade-visual-emotes", discover: 3, name: { id: "Evade Visual Emotes - Roblox Script", en: "Evade Visual Emotes - Roblox Script" }, tag: "Roblox", price: "Rp 20.000",
     header: { id: "Ganti emote secara instan di Evade (Mobile/Desktop)", en: "Swap emotes instantly in Evade (Mobile/Desktop)" },
-    images: ["assets/store/evade-visual-emotes.webp"],
+    images: ["assets/store/evade-visual-emotes-v2.webp"],
     desc: {
       id: "Evade Visual Emotes untuk Mobile/Desktop\n• Khusus Evade\n• Ganti emote secara instan\n• Semua emote bisa ditukar\n• Rockin Stride hanya bisa ditukar ke Kickback\n• Zombie Stride hanya bisa ditukar ke Classic Dance\n\nBACA SEBELUM MEMBELI! Skrip ini hanya untuk tujuan visual: emote hanya terlihat di layar kamu. Perlu dipahami bahwa metode ini berisiko tinggi jika dipakai bersamaan dengan siaran langsung karena bergantung pada exploit, dan pembeli menanggung sepenuhnya segala risikonya. Aku hanya menjual skrip ini kepada pihak yang berminat dan memahami risikonya.",
       en: "Evade Visual Emotes for Mobile/Desktop\n• Evade only\n• Swap emotes instantly\n• All emotes can be swapped\n• Rockin Stride can only swap to Kickback\n• Zombie Stride can only swap to Classic Dance\n\nREAD BEFORE BUYING! This script is visual-only: the emote effects only show up on your screen. Using it while livestreaming can be pretty risky, since it relies on an exploit, and you are fully responsible for anything that happens to your account. I am only selling the script to people who are interested and understand the risks.",
