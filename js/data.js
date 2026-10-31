@@ -191,7 +191,7 @@ window.PRODUCTS = [
     },
     url: "https://avora.id/honamihere/evade-visual-unusual-roblox-script" },
 
-  { id: "evade-visual-carry", discover: 5, name: { id: "Evade Visual Carry - Roblox Script", en: "Evade Visual Carry - Roblox Script" }, tag: "Roblox", price: "Rp 10.000",
+  { id: "evade-visual-carry", name: { id: "Evade Visual Carry - Roblox Script", en: "Evade Visual Carry - Roblox Script" }, tag: "Roblox", price: "Rp 10.000",
     header: { id: "Ganti Carry secara instan di Evade (Mobile/Desktop)", en: "Swap Carry instantly in Evade (Mobile/Desktop)" },
     images: ["assets/store/evade-visual-carry.webp"],
     desc: {
