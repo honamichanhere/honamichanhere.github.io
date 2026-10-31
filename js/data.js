@@ -71,7 +71,7 @@ window.LINKS = [
    ========================================================= */
 window.VIDEOS = [
   /* Tutorial script Mugiwara HUB (tampil di Other + Discover). Judul, tayang, tanggal, durasi diisi otomatis dari YouTube */
-  { yt: "https://www.youtube.com/watch?v=64MjgGJADjA", type: "other", category: "Tutorial", discover: 2 },
+  { yt: "https://www.youtube.com/watch?v=64MjgGJADjA", type: "other", category: "Tutorial", discover: 7 },
 
   /* Video client. Judul, tayang, tanggal, durasi diisi otomatis dari YouTube; urutan = tanggal upload (terbaru di atas).
      featured: 1..10 = 10 video yang tampil paling depan (angka kecil = lebih dulu) */
@@ -162,7 +162,7 @@ window.VIDEOS = [
    ========================================================= */
 window.PRODUCTS = [
   /* Produk asli */
-  { id: "korless-visual", name: { id: "Korless Visual - Roblox Script", en: "Korless Visual - Roblox Script" }, tag: "Roblox", price: "Rp 10.000",
+  { id: "korless-visual", discover: 2, name: { id: "Korless Visual - Roblox Script", en: "Korless Visual - Roblox Script" }, tag: "Roblox", price: "Rp 10.000",
     header: { id: "Efek visual Korless untuk Mobile/Desktop", en: "Korless visual effect for Mobile/Desktop" },
     images: ["assets/store/korless-visual.webp", "assets/store/korless-visual-2.webp", "assets/store/korless-visual-3.webp"],
     desc: {
@@ -172,7 +172,7 @@ window.PRODUCTS = [
     sold: 337,
     url: "https://avora.id/honamihere/korless-visual-roblox-script" },
 
-  { id: "evade-visual-emotes", name: { id: "Evade Visual Emotes - Roblox Script", en: "Evade Visual Emotes - Roblox Script" }, tag: "Roblox", price: "Rp 20.000",
+  { id: "evade-visual-emotes", discover: 3, name: { id: "Evade Visual Emotes - Roblox Script", en: "Evade Visual Emotes - Roblox Script" }, tag: "Roblox", price: "Rp 20.000",
     header: { id: "Ganti emote secara instan di Evade (Mobile/Desktop)", en: "Swap emotes instantly in Evade (Mobile/Desktop)" },
     images: ["assets/store/evade-visual-emotes.webp"],
     desc: {
@@ -181,6 +181,33 @@ window.PRODUCTS = [
     },
     sold: 66,
     url: "https://avora.id/honamihere/evade-visual-emotes-roblox-script" },
+
+  { id: "evade-visual-unusual", discover: 4, name: { id: "Evade Visual Unusual - Roblox Script", en: "Evade Visual Unusual - Roblox Script" }, tag: "Roblox", price: "Rp 20.000",
+    header: { id: "Ganti Unusual secara instan di Evade (Mobile/Desktop)", en: "Swap Unusual instantly in Evade (Mobile/Desktop)" },
+    images: ["assets/store/evade-visual-unusual.webp"],
+    desc: {
+      id: "Evade Visual Unusual untuk Mobile/Desktop\n• Khusus Evade\n• Ganti Unusual secara instan\n• Semua Unusual bisa ditukar\n\nBACA SEBELUM MEMBELI! Skrip ini hanya untuk tujuan visual: Unusual hanya terlihat di layar kamu. Perlu dipahami bahwa metode ini berisiko tinggi jika dipakai bersamaan dengan siaran langsung karena bergantung pada exploit, dan pembeli menanggung sepenuhnya segala risikonya. Aku hanya menjual skrip ini kepada pihak yang berminat.",
+      en: "Evade Visual Unusual for Mobile/Desktop\n• Evade only\n• Swap Unusual instantly\n• All Unusual can be swapped\n\nREAD BEFORE BUYING! This script is visual-only: the unusual effects will only show up on your screen. Using it while livestreaming can be pretty risky, since it relies on an exploit. Use it at your own risk, you are fully responsible for anything that happens to your account. I am only selling the script to people who are interested and understand the risks.",
+    },
+    url: "https://avora.id/honamihere/evade-visual-unusual-roblox-script" },
+
+  { id: "evade-visual-carry", discover: 5, name: { id: "Evade Visual Carry - Roblox Script", en: "Evade Visual Carry - Roblox Script" }, tag: "Roblox", price: "Rp 10.000",
+    header: { id: "Ganti Carry secara instan di Evade (Mobile/Desktop)", en: "Swap Carry instantly in Evade (Mobile/Desktop)" },
+    images: ["assets/store/evade-visual-carry.webp"],
+    desc: {
+      id: "Evade Visual Carry untuk Mobile/Desktop\n• Khusus Evade\n• Ganti Carry secara instan\n• Semua Carry bisa ditukar\n\nBACA SEBELUM MEMBELI! Skrip ini hanya untuk tujuan visual: efek Carry hanya terlihat di layar kamu. Perlu dipahami bahwa metode ini berisiko tinggi jika dipakai bersamaan dengan siaran langsung karena bergantung pada exploit, dan pembeli menanggung sepenuhnya segala risikonya. Aku hanya menjual skrip ini kepada pihak yang berminat.",
+      en: "Evade Visual Carry for Mobile/Desktop\n• Evade only\n• Swap Carry instantly\n• All Carry can be swapped\n\nREAD BEFORE BUYING! This script is visual-only: the carry effects will only show up on your screen. Using it while livestreaming can be pretty risky, since it relies on an exploit. Use it at your own risk, you are fully responsible for anything that happens to your account. I am only selling the script to people who are interested and understand the risks.",
+    },
+    url: "https://avora.id/honamihere/evade-visual-carry-roblox-script" },
+
+  { id: "evade-visual-catalog", discover: 6, name: { id: "Evade Visual Catalog - Roblox Script", en: "Evade Visual Catalog - Roblox Script" }, tag: "Roblox", price: "Rp 30.000",
+    header: { id: "Pakai item catalog secara visual di Evade (Mobile/Desktop)", en: "Use catalog items visually in Evade (Mobile/Desktop)" },
+    images: ["assets/store/evade-visual-catalog.webp"],
+    desc: {
+      id: "Evade Visual Catalog untuk Mobile/Desktop\n• Semua Accessories\n• Semua Clothing\n• Semua Head\n• Semua Shirt\n\nBACA SEBELUM MEMBELI! Skrip ini hanya untuk tujuan visual: semua item catalog hanya terlihat di layar kamu. Perlu dipahami bahwa metode ini berisiko tinggi jika dipakai bersamaan dengan siaran langsung karena bergantung pada exploit, dan pembeli menanggung sepenuhnya segala risikonya. Aku hanya menjual skrip ini kepada pihak yang berminat.",
+      en: "Evade Visual Catalog for Mobile/Desktop\n• All Accessories\n• All Clothing\n• All Head\n• All Shirt\n\nREAD BEFORE BUYING! This script is visual-only: everything from the catalog will only show up on your screen. Using it while livestreaming can be pretty risky, since it relies on an exploit. Use it at your own risk, you are fully responsible for anything that happens to your account. I am only selling the script to people who are interested and understand the risks.",
+    },
+    url: "https://avora.id/honamihere/evade-visual-catalog-roblox-script" },
 
   { id: "cc-quality-pack", name: { id: "My CC+Quality Pack - After Effect", en: "My CC+Quality Pack - After Effect" }, tag: "Editing", price: "Rp 50.000",
     header: { id: "Setup CC dan kualitas After Effects yang aku pakai sendiri", en: "The exact CC & quality setup I use in After Effects" },
